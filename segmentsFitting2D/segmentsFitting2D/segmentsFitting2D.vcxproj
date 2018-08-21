@@ -23,6 +23,7 @@
     <ProjectGuid>{EEA23530-1CC3-40F8-A7EB-418A11DE6447}</ProjectGuid>
     <RootNamespace>triangleFitting2D</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>segmentsFitting2D</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

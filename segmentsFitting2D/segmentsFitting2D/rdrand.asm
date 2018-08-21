@@ -1,7 +1,7 @@
 .code
 
 my_rand PROC
-	rdrand rax
+	rdrand eax
 	ret
 
 my_rand ENDP

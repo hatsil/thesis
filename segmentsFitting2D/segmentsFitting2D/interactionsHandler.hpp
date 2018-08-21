@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <functional>
 
 #include <glm/glm.hpp>
 
@@ -100,8 +99,6 @@
 //}
 //}
 
-
-
 namespace thesis {
 	class InteractionsHandler {
 	public:
@@ -109,35 +106,37 @@ namespace thesis {
 		virtual ~InteractionsHandler();
 
 		inline bool isActive() const {
-			return glfwWindowShouldClose(display->window);
+			return !glfwWindowShouldClose(display->window);
 		}
 
+		void initCallbacks() const;
+
 	private:
+		//friends:
+		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		friend void mouseCallback(GLFWwindow* window, int button, int action, int mods);
+		friend void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+
 		//fields:
 		Display* display;
 		int width;
 		int height;
-		std::function<void(GLFWwindow*, int, int, int, int)> keyCallback;
-		std::function<void(GLFWwindow*, int, int, int)> mouseCallback;
-		std::function<void(GLFWwindow*, int, int)> framebufferSizeCallback;
 		
-		std::vector<glm::vec2> realVertices;
-		std::vector<glm::vec2> cloud;
-		std::vector<glm::vec2> estimatedVertices;
+		std::vector<glm::dvec2> realVertices;
+		std::vector<glm::dvec2> cloud;
+		std::vector<glm::dvec2> estimatedVertices;
 
 		bool showRealTriangle;
 		bool showClould;
 		bool showEstimatedTrinagle;
 		
-		
 		//methods:
-		void initCallbacks();
-		void setCallbacks();
-		void drawAll() const;
+		void draw() const;
 		void drawRealTriangle() const;
 		void drawCloud() const;
 		void drawEstimatedTriangle() const;
 		void showResult() const;
+		void generateNewPointsCloud();
+		void addVertex(const double& xpos, const double& ypos);
 	};
 }
-
