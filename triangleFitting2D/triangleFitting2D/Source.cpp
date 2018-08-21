@@ -7,6 +7,6 @@ int main() {
 	for (int i = 0; i < 10; ++i)
 		std::cout << thesis::random() << std::endl;
 	std::system("pause");
-	return 0;
+	return 1;
 }
 
