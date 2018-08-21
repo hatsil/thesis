@@ -1,6 +1,7 @@
-#include <cstdlib>
 #include <iostream>
 #include <exception>
+
+//#include <cstdlib>
 
 #include "interactionsHandler.hpp"
 
@@ -10,6 +11,7 @@ namespace thesis {
 
 int main() {
 	int ans = 0;
+	
 	try {
 		thesis::iHandler = new thesis::InteractionsHandler(); //throws...
 		thesis::iHandler->initCallbacks();
@@ -23,7 +25,6 @@ int main() {
 		ans = 1;
 	}
 
-	std::system("pause");
 	return ans;
 }
 

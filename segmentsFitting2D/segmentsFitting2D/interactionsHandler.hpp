@@ -99,6 +99,8 @@
 //}
 //}
 
+typedef unsigned int uint;
+
 namespace thesis {
 	class InteractionsHandler {
 	public:
@@ -116,27 +118,30 @@ namespace thesis {
 		friend void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 		friend void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 		friend void framebufferSizeCallback(GLFWwindow* window, int width, int height);
+		friend void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
 
 		//fields:
 		Display* display;
 		int width;
 		int height;
+		int segments;
 		
 		std::vector<glm::dvec2> realVertices;
-		std::vector<glm::dvec2> cloud;
+		std::vector<glm::dvec2> noisyVertices;
 		std::vector<glm::dvec2> estimatedVertices;
 
-		bool showRealTriangle;
-		bool showClould;
-		bool showEstimatedTrinagle;
+		bool showRealVertices;
+		bool showNoisyVertices;
+		bool showEstimatedSegments;
 		
 		//methods:
 		void draw() const;
-		void drawRealTriangle() const;
-		void drawCloud() const;
-		void drawEstimatedTriangle() const;
-		void showResult() const;
-		void generateNewPointsCloud();
+		void drawRealVertices() const;
+		void drawNoisyVertices() const;
+		void drawEstimatedSegments() const;
+		void generateNoisyVertices();
 		void addVertex(const double& xpos, const double& ypos);
+		void fitSegments();
+		uint getRandomIndex();
 	};
 }
