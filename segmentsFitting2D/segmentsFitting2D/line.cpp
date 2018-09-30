@@ -40,8 +40,10 @@ void Line::defaultDraw() const {
 		glLineWidth(boldLineWidth);
 		mesh().draw(transformation, color);
 		glLineWidth(prevLineWidth);
-		p1.draw();
-		p2.draw();
+		if(pressed) {
+			p1.draw();
+			p2.draw();
+		}
 		return;
 	}
 
@@ -228,7 +230,7 @@ void Line::EdgePoint::leftPress() {
 }
 
 void Line::EdgePoint::leftRelease() {
-	released = true;
+	setDefaultState();
 	selectableDelegate->setDrawAll();
 }
 
