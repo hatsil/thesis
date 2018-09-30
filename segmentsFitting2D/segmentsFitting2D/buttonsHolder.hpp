@@ -7,29 +7,49 @@
 
 #pragma once
 
-#include "pressable.hpp"
+#include "drawable.hpp"
+#include "selectable.hpp"
 #include "button.hpp"
+#include "squareMesh.hpp"
 
-#include <set>
+#include <functional>
+#include <vector>
+#include <iostream>
 
 namespace thesis {
-class Window;
-class ButtonsHolder: public Pressable {
+class ButtonDelegate;
+class ButtonsHolder: public Drawable {
 public:
-	ButtonsHolder(int width, int buttonSize, uint pickingColor, Window& window);
+	ButtonsHolder(size_t width, size_t buttonSize);
 	virtual ~ButtonsHolder();
 
-	void press() override {}
-	void release() override {}
-	void deliverPress(double xpos, double ypos) override {}
-	void drawForPicking() const override {}
-	void draw() const override {}
+	//MARK: Drawable
+	void draw() const override;
+	void drawForPicking() const override;
+
+	//MARK: pubnlic methods
+	void controlPress();
+	void controlRelease();
+	ButtonsHolder& initButtons();
+
+	size_t getWidth() const;
+	size_t getHeight() const;
+
+	void setDelegate(ButtonDelegate* buttonDelegate);
 
 private:
-	Window& window;
-	int width;
-	int height;
-	std::set<Button*, PressablePtrComp> buttons;
+	//MARK: private fields
+	size_t width, height;
+	bool controlPressed;
+	std::vector<Button*> buttons;
+	ButtonDelegate* buttonDelegate;
+
+	void forEach(const std::function<void(int, Button*)>& func) const;
+	void forEach(const std::function<void(Button*)>& func) const;
+
+	const SquareMesh& mesh() const;
 };
+
+
 
 } /* namespace thesis */

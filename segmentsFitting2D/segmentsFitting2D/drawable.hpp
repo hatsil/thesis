@@ -7,6 +7,10 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
+#include "defs.hpp"
+
 namespace thesis {
 
 class Drawable {
@@ -15,6 +19,9 @@ public:
 	virtual ~Drawable();
 
 	virtual void draw() const = 0;
+	virtual void drawForPicking() const = 0;
+
+	static glm::vec3 convertPickingColor(uint pickingColor);
 };
 
 } /* namespace thesis */

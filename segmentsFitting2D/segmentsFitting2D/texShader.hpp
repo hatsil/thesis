@@ -8,7 +8,7 @@ namespace thesis {
 		TexShader();
 		virtual ~TexShader();
 
-		void update() const;
+		void update(float darkness) const;
 	};
 } /* namespace thesis */
 

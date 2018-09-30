@@ -1,31 +1,43 @@
-/*
- * button.hpp
- *
- *  Created on: 12 Sep 2018
- *      Author: hatsil
- */
-
 #pragma once
 
-#include <string>
-#include <functional>
-
+#include "selectable.hpp"
 #include "texture.hpp"
-#include "pressable.hpp"
+#include "squareMesh.hpp"
+#include "texMesh.hpp"
 
 namespace thesis {
-
-class Button: public Pressable {
+class ButtonDelegate;
+class Button: public Selectable {
 public:
-	Button(uint pickingColor, const char* texture);
+	Button(const char* fileName);
 	virtual ~Button();
 
-	
+	//MARK: Drawable
+	void draw() const override;
+	void drawForPicking() const override;
+
+	//MARK: Selectable
+	void leftPress() override;
+	void leftRelease() override;
+	void resign() override;
+	bool mark() override;
+	bool unmark() override;
+
+	void setDelegate(ButtonDelegate* buttonDelegate);
+
+protected:
+	ButtonDelegate* buttonDelegate;
+
+	virtual void buttonOperation() = 0;
 
 private:
-	Texture* texture;
-	std::function<void()> pressAction;
+	//MARK: private fields
+	Texture texture;
+	bool marked;
+
+	//MARK: private methods
+	const TexMesh& texMesh() const;
+	const SquareMesh& squareMesh() const;
 };
 
 } /* namespace thesis */
-

@@ -20,7 +20,7 @@ public:
 	BlockingQueue():
 		mtx(),
 		sem(0),
-		queue() {};
+		queue() {}
 
 	virtual ~BlockingQueue() {}
 

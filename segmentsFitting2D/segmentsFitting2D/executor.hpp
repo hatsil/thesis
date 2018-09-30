@@ -39,14 +39,11 @@ public:
 
 	template <class Fn, class... Args>
 	void addTask(ExecutorHandler handler, Fn&& fn, Args&&... args) {
-		assertActivity(!shuttedDown, "Can't add task to executor, executor is shutted down.");
-
-		auto func = std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...);
-		
+		assertActivity(!shuttedDown, "Can't add task to executor, executor is shutted down.");		
 		CountdownLatch* latch = (CountdownLatch*)handler;
 		++(*latch);
-		
-		tasks.add([=]() mutable {
+		tasks.add([func = std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...),
+			latch]() mutable {
 			func();
 			--(*latch);
 		});

@@ -25,7 +25,7 @@ Shader::Shader(const char* fileName) :
 }
 
 Shader::~Shader() {
-	for (auto&& m_shader : m_shaders) {
+	for(auto&& m_shader : m_shaders) {
 		glDetachShader(m_program, m_shader);
 		glDeleteShader(m_shader);
 	}
@@ -39,8 +39,8 @@ std::string Shader::loadShader(const std::string& fileName) {
 	std::string output;
 	std::string line;
 
-	if (file.is_open())
-		while (file.good()) {
+	if(file.is_open())
+		while(file.good()) {
 			std::getline(file, line);
 			output.append(line + "\n");
 		}

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -145,15 +145,29 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="button.cpp" />
+    <ClCompile Include="buttons.cpp" />
     <ClCompile Include="buttonsHolder.cpp" />
     <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="canvasDrawable.cpp" />
+    <ClCompile Include="canvasPlate.cpp" />
+    <ClCompile Include="globalVars.cpp" />
+    <ClCompile Include="controlPlate.cpp" />
     <ClCompile Include="countdownLatch.cpp" />
+    <ClCompile Include="defaultPlate.cpp" />
     <ClCompile Include="display.cpp" />
     <ClCompile Include="drawable.cpp" />
     <ClCompile Include="executor.cpp" />
     <ClCompile Include="getColorOnPress.cpp" />
     <ClCompile Include="interactionsHandler.cpp" />
-    <ClCompile Include="pressable.cpp" />
+    <ClCompile Include="line.cpp" />
+    <ClCompile Include="lineMesh.cpp" />
+    <ClCompile Include="linePlate.cpp" />
+    <ClCompile Include="removable.cpp" />
+    <ClCompile Include="squareMesh.cpp" />
+    <ClCompile Include="squareModel.cpp" />
+    <ClCompile Include="stb_image.c" />
+    <ClCompile Include="texMesh.cpp" />
+    <ClCompile Include="selectable.cpp" />
     <ClCompile Include="random.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="semaphore.cpp" />
@@ -164,19 +178,46 @@
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="batchQueue.hpp" />
     <ClInclude Include="blockingQueue.hpp" />
     <ClInclude Include="button.hpp" />
+    <ClInclude Include="buttonDelegate.hpp" />
+    <ClInclude Include="buttons.hpp" />
     <ClInclude Include="buttonsHolder.hpp" />
     <ClInclude Include="canvas.hpp" />
+    <ClInclude Include="canvasDelegate.hpp" />
+    <ClInclude Include="canvasDrawable.hpp" />
+    <ClInclude Include="canvasDrawableDelegate.hpp" />
+    <ClInclude Include="canvasDrawables.hpp" />
+    <ClInclude Include="canvasPlate.hpp" />
+    <ClInclude Include="canvasPlates.hpp" />
+    <ClInclude Include="canvasPlatesDelegates.hpp" />
+    <ClInclude Include="controlPlateDelegate.hpp" />
+    <ClInclude Include="defaultPlateDelegate.hpp" />
+    <ClInclude Include="globalVars.hpp" />
     <ClInclude Include="concurrent.hpp" />
+    <ClInclude Include="controlPlate.hpp" />
     <ClInclude Include="countdownLatch.hpp" />
+    <ClInclude Include="defaultPlate.hpp" />
     <ClInclude Include="defs.hpp" />
     <ClInclude Include="display.hpp" />
     <ClInclude Include="drawable.hpp" />
     <ClInclude Include="executor.hpp" />
     <ClInclude Include="getColorOnPress.hpp" />
     <ClInclude Include="interactionsHandler.hpp" />
-    <ClInclude Include="pressable.hpp" />
+    <ClInclude Include="line.hpp" />
+    <ClInclude Include="lineMesh.hpp" />
+    <ClInclude Include="linePlate.hpp" />
+    <ClInclude Include="linePlateDelegate.hpp" />
+    <ClInclude Include="meshes.hpp" />
+    <ClInclude Include="removable.hpp" />
+    <ClInclude Include="removableDelegate.hpp" />
+    <ClInclude Include="selectableDelegate.hpp" />
+    <ClInclude Include="squareMesh.hpp" />
+    <ClInclude Include="squareModel.hpp" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texMesh.hpp" />
+    <ClInclude Include="selectable.hpp" />
     <ClInclude Include="random.hpp" />
     <ClInclude Include="semaphore.hpp" />
     <ClInclude Include="shader.hpp" />

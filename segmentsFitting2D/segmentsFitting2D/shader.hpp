@@ -10,6 +10,10 @@ namespace thesis {
 class SimpleShader;
 class TexShader;
 
+class TexMesh;
+class SquareMesh;
+class LineMesh;
+
 class Shader {
 public:
 	Shader(const char* fileName);
@@ -32,6 +36,9 @@ private:
 	//friends:
 	friend SimpleShader;
 	friend TexShader;
+	friend TexMesh;
+	friend SquareMesh;
+	friend LineMesh;
 };
 
 } /* namespace thesis */

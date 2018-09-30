@@ -3,7 +3,7 @@
 
 #include "display.hpp"
 
-thesis::Display::Display(int width, int height, const char* title) :
+thesis::Display::Display(int width, int height, const char* title):
 	window(0) {
 	std::string what("Failed init dispaly");
 	bool needTermination = false;
@@ -11,9 +11,9 @@ thesis::Display::Display(int width, int height, const char* title) :
 	//Initialize the library:
 	if(glfwInit()) {
 		needTermination = true;
-		if ((window = glfwCreateWindow(width, height, title, 0, 0))) {
+		if((window = glfwCreateWindow(width, height, title, 0, 0))) {
 			glfwMakeContextCurrent(window);
-			if (glewInit() != GLEW_OK) {
+			if(glewInit() != GLEW_OK) {
 				what += ": Glew failed to initialize";
 				goto bad;
 			}
