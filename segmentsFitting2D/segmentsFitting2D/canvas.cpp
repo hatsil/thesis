@@ -25,18 +25,22 @@ Canvas::Canvas(size_t width, size_t height) :
 	removables(),
 	rippedObjects(),
 	drawables(),
-	lineTransformation(nullptr),
-	defaultPlate(),
-	controlPlate(),
-	linePlate() {
-	defaultPlate.setDelegate((DefaultPlateDelegate*)this);
-	linePlate.setDelegate((LinePlateDelegate*)this);
-	controlPlate.setDelegate((ControlPlateDelegate*)this);
+	lineTransformation(nullptr) {
+	defaultPlate = new DefaultPlate;
+	controlPlate = new ControlPlate;
+	linePlate = new LinePlate;
+	defaultPlate->setDelegate((DefaultPlateDelegate*)this);
+	linePlate->setDelegate((LinePlateDelegate*)this);
+	controlPlate->setDelegate((ControlPlateDelegate*)this);
 	//set defalt plate:
-	curPlate = prevPlate = &defaultPlate;
+	curPlate = prevPlate = defaultPlate;
 }
 
 Canvas::~Canvas() {
+	delete defaultPlate;
+	delete linePlate;
+	delete controlPlate;
+
 	if(lineTransformation)
 		delete lineTransformation;
 	
@@ -122,7 +126,7 @@ void Canvas::addRipped(Removable* ripped) {
 
 void Canvas::controlPress() {
 	prevPlate = curPlate;
-	curPlate = &controlPlate;
+	curPlate = controlPlate;
 }
 
 void Canvas::controlRelease() {
@@ -130,11 +134,23 @@ void Canvas::controlRelease() {
 }
 
 void Canvas::setDefaultPlate() {
-	curPlate = &defaultPlate;
+	curPlate = defaultPlate;
 }
 
 void Canvas::setLinePlate() {
-	curPlate = &linePlate;
+	curPlate = linePlate;
+}
+
+Selectable* Canvas::getDefaultPlate() const {
+	return defaultPlate;
+}
+
+Selectable* Canvas::getControlPlate() const {
+	return controlPlate;
+}
+
+Selectable* Canvas::getLinePlate() const {
+	return linePlate;
 }
 
 void Canvas::clearRippedObjects() {
@@ -198,9 +214,9 @@ size_t Canvas::getHeight() const {
 
 void Canvas::setDelegate(CanvasDelegate* canvasDelegate) {
 	this->canvasDelegate = canvasDelegate;
-	defaultPlate.setDelegate(canvasDelegate);
-	linePlate.setDelegate(canvasDelegate);
-	controlPlate.setDelegate(canvasDelegate);
+	defaultPlate->setDelegate(canvasDelegate);
+	linePlate->setDelegate(canvasDelegate);
+	controlPlate->setDelegate(canvasDelegate);
 }
 
 } /* namespace thesis */

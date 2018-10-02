@@ -11,7 +11,7 @@ void CanvasPlate::drawForPicking() const {
 	mesh().draw(glm::mat4(1), pickingColorVec);
 }
 
-void CanvasPlate::leftPress() {}
+void CanvasPlate::leftPress(Selectable*) {}
 
 void CanvasPlate::leftRelease() {}
 

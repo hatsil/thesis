@@ -60,9 +60,12 @@ public:
 	void remove(const std::list<CanvasDrawable*>::iterator& it) override;
 	void moveToFront(std::list<CanvasDrawable*>::iterator& it) override;
 	
-	//MARK: plates setters
+	//MARK: plates setters and getters
 	void setDefaultPlate();
 	void setLinePlate();
+	Selectable* getDefaultPlate() const;
+	Selectable* getControlPlate() const;
+	Selectable* getLinePlate() const;
 
 	//MARK: public methods
 	void undo();
@@ -84,9 +87,9 @@ private:
 	CanvasPlate* curPlate;
 	CanvasPlate* prevPlate;
 
-	DefaultPlate defaultPlate;
-	ControlPlate controlPlate;
-	LinePlate linePlate;
+	DefaultPlate* defaultPlate;
+	ControlPlate* controlPlate;
+	LinePlate* linePlate;
 
 	std::set<Removable*, SelectablePtrComp> removables;
 	std::list<Removable*> rippedObjects;

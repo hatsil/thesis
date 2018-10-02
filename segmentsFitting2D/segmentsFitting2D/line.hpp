@@ -8,6 +8,7 @@
 
 #include <glm/glm.hpp>
 #include <list>
+#include <set>
 
 namespace thesis {
 class Line:
@@ -29,7 +30,7 @@ public:
 	void setDelegate(RemovableDelegate* removableDelegate) override;
 
 	//MARK: Selectable
-	void leftPress() override;
+	void leftPress(Selectable* prev) override;
 	void leftRelease() override;
 	void leftPosition(double xpos, double ypos) override;
 	void resign() override;
@@ -49,7 +50,7 @@ private:
 
 		void draw() const override;
 		void drawForPicking() const override;
-		void leftPress() override;
+		void leftPress(Selectable* prev) override;
 		void leftRelease() override;
 		void leftPosition(double xpos, double ypos) override;
 		void resign() override;
@@ -69,7 +70,7 @@ private:
 		glm::mat4 translation;
 		glm::mat4 scale;
 		glm::vec3 color;
-		bool pressed, released;
+		bool pressed, released, moved;
 		double xposPrev, yposPrev;
 
 		void calcTranslation();
@@ -78,9 +79,9 @@ private:
 
 	//MARK: fields
 	glm::vec3 color;
+	std::set<Selectable*> relatives;
 
-	EdgePoint p1;
-	EdgePoint p2;
+	EdgePoint* p1, *p2;
 	
 	bool isRipped, pressed, released, moved, marked;
 	double xposPrev, yposPrev;
@@ -90,7 +91,8 @@ private:
 	bool isBold() const;
 	const LineMesh& mesh() const;
 
-	glm::vec2 convertPos(double xpos, double ypos);
+	glm::vec2 convertPos(double xpos, double ypos) const;
+	bool isRelative(Selectable* selectable) const;
 	
 	//MARK: friens
 	friend EdgePoint;

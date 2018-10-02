@@ -52,12 +52,14 @@ public:
 	void buttonViewport(int i) const override;
 	void setDefaultPlate() override;
 	void setLinePlate() override;
+	Selectable* getDefaultPlate() const override;
+	Selectable* getControlPlate() const override;
+	Selectable* getLinePlate() const override;
 
 	//MARK: SelectableDelegate
 	void getCursorPosition(double& xpos, double& ypos) const override;
 	void setDraw() override;
 	void setDrawForPicking() override;
-	void setDrawAll() override;
 	void setClearRemovables() override;
 	void addSelectable(Selectable* selectable) override;
 	void removeSelectable(Selectable* selectable) override;
@@ -74,8 +76,8 @@ private:
 	uchar* colorsBuffer;
 
 	//MARK: commands plates
-	ButtonsHolder buttonsHolder;
-	Canvas canvas;
+	ButtonsHolder* buttonsHolder;
+	Canvas* canvas;
 
 	//MARK: status vars
 	bool drawStatus, drawForPickingStatus, clearRemovablesStatus;

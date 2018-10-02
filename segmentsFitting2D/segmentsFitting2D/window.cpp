@@ -85,9 +85,7 @@ Window::Window():
 	height(WINDOW_HEIGHT),
 	drawStatus(false),
 	drawForPickingStatus(false),
-	clearRemovablesStatus(false),
-	canvas(CANVAS_WIDTH, CANVAS_HEIGHT),
-	buttonsHolder(WINDOW_WIDTH, BUTTON_SIZE) {
+	clearRemovablesStatus(false) {
 	colorsBuffer = new uchar[WINDOW_WIDTH * WINDOW_HEIGHT * (size_t)4];
 
 	simpleShader = new SimpleShader;
@@ -97,8 +95,11 @@ Window::Window():
 	squareMesh = new SquareMesh(*simpleShader);
 	texMesh = new TexMesh(*texShader);
 	
-	buttonsHolder.initButtons().setDelegate(this);
-	canvas.setDelegate(this);
+	canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+	buttonsHolder = new ButtonsHolder(WINDOW_WIDTH, BUTTON_SIZE);
+
+	buttonsHolder->initButtons().setDelegate(this);
+	canvas->setDelegate(this);
 	
 	glfwSetWindowUserPointer(glfwWindow, this);
 
@@ -108,8 +109,11 @@ Window::Window():
 }
 
 Window::~Window() {
-	canvas.wait();
+	canvas->wait();
 	
+	delete canvas;
+	delete buttonsHolder;
+
 	delete texMesh;
 	delete squareMesh;
 	delete lineMesh;
@@ -130,9 +134,9 @@ bool Window::isActive() const {
 void Window::buttonsHolderViewport() const {
 	glViewport(
 		0,
-		(GLint)canvas.getHeight(),
-		(GLsizei)buttonsHolder.getWidth(),
-		(GLsizei)buttonsHolder.getHeight()
+		(GLint)canvas->getHeight(),
+		(GLsizei)buttonsHolder->getWidth(),
+		(GLsizei)buttonsHolder->getHeight()
 	);
 }
 
@@ -140,8 +144,8 @@ void Window::canvasViewport() const {
 	glViewport(
 		0,
 		0,
-		(GLsizei)canvas.getWidth(),
-		(GLsizei)canvas.getHeight()
+		(GLsizei)canvas->getWidth(),
+		(GLsizei)canvas->getHeight()
 	);
 }
 
@@ -149,9 +153,9 @@ void Window::draw() const {
 	glClearColor(1, 1, 1, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	buttonsHolderViewport();
-	buttonsHolder.draw();
+	buttonsHolder->draw();
 	canvasViewport();
-	canvas.draw();
+	canvas->draw();
 	glfwSwapBuffers(glfwWindow);
 }
 
@@ -159,9 +163,9 @@ void Window::drawForPicking() const {
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT);
 	buttonsHolderViewport();
-	buttonsHolder.drawForPicking();
+	buttonsHolder->drawForPicking();
 	canvasViewport();
-	canvas.drawForPicking();
+	canvas->drawForPicking();
 	glFlush();
 	glFinish();
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -223,7 +227,7 @@ void Window::keyCallback(int key, int scancode, int action, int mods) {
 				selected = nullptr;
 			}
 
-			canvas.undo();
+			canvas->undo();
 			drawIfNeeded();
 		}
 		break;
@@ -241,13 +245,12 @@ void Window::mouseCallback(int button, int action, int mods) {
 			if(selected && selected != newSelectable)
 				selected->resign();
 
+			if(newSelectable)
+				newSelectable->leftPress(selected);
+			
 			selected = newSelectable;
 
-			if(newSelectable)
-				newSelectable->leftPress();
-
 			drawIfNeeded();
-			
 		} else {
 			if(selected) {
 				selected->leftRelease();
@@ -333,7 +336,7 @@ void Window::getCursorPosition(double& xpos, double& ypos) const {
 }
 
 void Window::fixOffsetCanvas(double&, double& ypos) const {
-	ypos -= buttonsHolder.getHeight();
+	ypos -= buttonsHolder->getHeight();
 }
 
 void Window::buttonViewport(int i) const {
@@ -341,18 +344,30 @@ void Window::buttonViewport(int i) const {
 	int buttonWidth = (GLint)BUTTON_SIZE + offset;
 	glViewport(
 		i*buttonWidth + offset,
-		(GLint)canvas.getHeight() + offset,
+		(GLint)canvas->getHeight() + offset,
 		(GLsizei)BUTTON_SIZE,
 		(GLsizei)BUTTON_SIZE
 	);
 }
 
 void Window::setDefaultPlate() {
-	canvas.setDefaultPlate();
+	canvas->setDefaultPlate();
 }
 
 void Window::setLinePlate() {
-	canvas.setLinePlate();
+	canvas->setLinePlate();
+}
+
+Selectable* Window::getDefaultPlate() const {
+	return canvas->getDefaultPlate();
+}
+
+Selectable* Window::getControlPlate() const {
+	return canvas->getControlPlate();
+}
+
+Selectable* Window::getLinePlate() const {
+	return canvas->getLinePlate();
 }
 
 void Window::drawAll() {
@@ -363,37 +378,37 @@ void Window::drawAll() {
 
 void Window::setDraw() {
 	drawStatus = true;
+	drawForPickingStatus = false;
+	clearRemovablesStatus = false;
 }
 
 void Window::setDrawForPicking() {
+	drawStatus = true;
 	drawForPickingStatus = true;
-}
-
-void Window::setDrawAll() {
-	setDraw();
-	setDrawForPicking();
+	clearRemovablesStatus = false;
 }
 
 void Window::setClearRemovables() {
+	drawStatus = true;
+	drawForPickingStatus = true;
 	clearRemovablesStatus = true;
-	setDrawAll();
 }
 
 void Window::drawIfNeeded() {
 	if(clearRemovablesStatus) {
 		clearRemovablesStatus = false;
 		selected = marked = nullptr;
-		canvas.clearRippedObjects();
+		canvas->clearRippedObjects();
+	}
+
+	if (drawForPickingStatus) {
+		drawForPickingStatus = false;
+		drawForPicking();
 	}
 
 	if(drawStatus) {
 		drawStatus = false;
 		draw();
-	}
-
-	if(drawForPickingStatus) {
-		drawForPickingStatus = false;
-		drawForPicking();
 	}
 }
 
@@ -448,8 +463,8 @@ void Window::controlPress() {
 		selected = nullptr;
 	}
 
-	buttonsHolder.controlPress();
-	canvas.controlPress();
+	buttonsHolder->controlPress();
+	canvas->controlPress();
 	drawAll();
 }
 
@@ -464,8 +479,8 @@ void Window::controlRelease() {
 		selected = nullptr;
 	}
 
-	buttonsHolder.controlRelease();
-	canvas.controlRelease();
+	buttonsHolder->controlRelease();
+	canvas->controlRelease();
 	drawAll();
 }
 

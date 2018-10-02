@@ -15,7 +15,7 @@ void LinePlate::draw() const {
 	linePlateDelegate->lineDraw();
 }
 
-void LinePlate::leftPress() {
+void LinePlate::leftPress(Selectable*) {
 	pressed = true;
 	selectableDelegate->getCursorPosition(xpos, ypos);
 }

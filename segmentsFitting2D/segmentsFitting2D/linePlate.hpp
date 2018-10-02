@@ -16,7 +16,7 @@ public:
 	void draw() const override;
 
 	//MARK: Selectable
-	void leftPress() override;
+	void leftPress(Selectable*) override;
 	void leftRelease() override;
 	void leftPosition(double xpos, double ypos) override;
 

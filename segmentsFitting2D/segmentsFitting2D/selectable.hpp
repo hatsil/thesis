@@ -20,7 +20,7 @@ public:
 	Selectable();
 	virtual ~Selectable();
 
-	virtual void leftPress() = 0;
+	virtual void leftPress(Selectable* prev) = 0;
 	virtual void leftRelease() = 0;
 	virtual void leftPosition(double xpos, double ypos);
 	virtual void resign();

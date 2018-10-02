@@ -6,8 +6,12 @@
 namespace thesis {
 Button::Button(const char* fileName):
 	Selectable(),
+	relatives(),
 	texture(fileName),
-	marked(false) {}
+	marked(false),
+	needRelease(true) {
+	relatives.insert(this);
+}
 
 Button::~Button() {}
 
@@ -20,17 +24,19 @@ void Button::drawForPicking() const {
 	squareMesh().draw(glm::mat4(1), pickingColorVec);
 }
 
-void Button::leftPress() {
-	if(!marked) {
-		marked = true;
-		selectableDelegate->setDraw();
-	}
+void Button::leftPress(Selectable* prev) {
+	if(!isRelative(prev))
+		needRelease = true;
+
+	marked = true;
+	selectableDelegate->setDraw();
 }
 
 void Button::leftRelease() {
-	if(selectableDelegate->getSelectable() == this) {
+	if(selectableDelegate->getSelectable() == this && needRelease) {
+		needRelease = false;
 		buttonOperation();
-		selectableDelegate->setDrawAll();
+		selectableDelegate->setDrawForPicking();
 	} else {
 		marked = false;
 		selectableDelegate->setDraw();
@@ -57,6 +63,7 @@ bool Button::unmark() {
 void Button::setDelegate(ButtonDelegate* buttonDelegate) {
 	this->buttonDelegate = buttonDelegate;
 	Selectable::setDelegate(buttonDelegate);
+	setRelatives();
 }
 
 const TexMesh& Button::texMesh() const {
@@ -65,6 +72,10 @@ const TexMesh& Button::texMesh() const {
 
 const SquareMesh& Button::squareMesh() const {
 	return selectableDelegate->getSquareMesh();
+}
+
+bool Button::isRelative(Selectable* selectable) const {
+	return relatives.find(selectable) != relatives.cend();
 }
 
 } /* namespace thesis */

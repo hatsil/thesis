@@ -10,6 +10,7 @@ public:
 
 protected:
 	void buttonOperation() override;
+	void setRelatives() override;
 
 };
 
@@ -20,6 +21,7 @@ public:
 
 protected:
 	void buttonOperation() override;
+	void setRelatives() override;
 
 };
 
