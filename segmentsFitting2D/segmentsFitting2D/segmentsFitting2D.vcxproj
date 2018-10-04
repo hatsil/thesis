@@ -144,6 +144,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="brokenLine.cpp" />
+    <ClCompile Include="brokenLineJoint.cpp" />
+    <ClCompile Include="brokenLinePlate.cpp" />
+    <ClCompile Include="brokenLineSegment.cpp" />
     <ClCompile Include="button.cpp" />
     <ClCompile Include="buttons.cpp" />
     <ClCompile Include="buttonsHolder.cpp" />
@@ -180,6 +184,9 @@
   <ItemGroup>
     <ClInclude Include="batchQueue.hpp" />
     <ClInclude Include="blockingQueue.hpp" />
+    <ClInclude Include="brokenLine.hpp" />
+    <ClInclude Include="brokenLinePlate.hpp" />
+    <ClInclude Include="brokenLinePlateDelegate.hpp" />
     <ClInclude Include="button.hpp" />
     <ClInclude Include="buttonDelegate.hpp" />
     <ClInclude Include="buttons.hpp" />

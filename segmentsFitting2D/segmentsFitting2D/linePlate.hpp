@@ -3,8 +3,6 @@
 #include "selectable.hpp"
 #include "canvasPlate.hpp"
 
-#include <glm/glm.hpp>
-
 namespace thesis {
 class LinePlateDelegate;
 class LinePlate: public CanvasPlate {

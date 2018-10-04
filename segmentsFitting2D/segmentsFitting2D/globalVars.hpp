@@ -8,6 +8,7 @@ namespace thesis {
 	extern const glm::vec3 normalJointColor;
 	extern const glm::vec3 selectedJointColor;
 	extern const glm::vec3 markedJointColor;
+	extern const glm::vec3 middlePressedJointColor;
 
 	//scale factor
 	extern const glm::vec3 jointScaleFactor;

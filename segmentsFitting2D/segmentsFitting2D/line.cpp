@@ -2,13 +2,8 @@
 #include <GL/glew.h>
 
 #include "line.hpp"
-#include "globalVars.hpp"
-
-#include "selectableDelegate.hpp"
 #include "removableDelegate.hpp"
 #include "canvasDrawableDelegate.hpp"
-
-#include <glm/gtc/matrix_transform.hpp>
 
 #include <cmath>
 
@@ -36,14 +31,6 @@ Line::~Line() {
 	delete p2;
 }
 
-glm::vec2 Line::convertPos(double xpos, double ypos) const {
-	return removableDelegate->convertPos(xpos, ypos);
-}
-
-bool Line::isRelative(Selectable* selectable) const {
-	return relatives.find(selectable) != relatives.cend();
-}
-
 void Line::defaultDraw() const {
 	glm::mat4 transformation = calcTransformation();
 	if(isBold()) {
@@ -58,7 +45,6 @@ void Line::defaultDraw() const {
 		}
 		return;
 	}
-
 	mesh().draw(transformation, color);
 }
 
@@ -196,26 +182,6 @@ void Line::setDelegate(SelectableDelegate* selectableDelegate) {
 	p2->setDelegate(selectableDelegate);
 }
 
-glm::mat4 Line::calcTransformation() const {
-	glm::vec2 dir = p2->getPosition() - p1->getPosition();
-	float angle = std::acos(glm::dot(glm::normalize(dir), {1, 0}));
-
-	if(dir.y < 0)
-		angle = -angle;
-
-	glm::mat4 t = glm::translate(glm::mat4(1), glm::vec3(p1->getPosition(), 0));
-	glm::mat4 tr = glm::rotate(t, angle, glm::vec3(0, 0, 1));
-	return glm::scale(tr, glm::vec3(glm::length(dir), 0, 0));
-}
-
-bool Line::isBold() const {
-	return pressed || marked;
-}
-
-const LineMesh& Line::mesh() const {
-	return selectableDelegate->getLineMesh();
-}
-
 
 //MARK: EdgePoint
 Line::EdgePoint::EdgePoint(const glm::vec2& position):
@@ -288,34 +254,8 @@ bool Line::EdgePoint::unmark() {
 	return false;
 }
 
-const glm::vec2& Line::EdgePoint::getPosition() const {
-	return position;
-}
-
-void Line::EdgePoint::setDefaultState() {
-	pressed = released = false;
-	color = normalJointColor;
-}
-
-void Line::EdgePoint::addOffset(const glm::vec2& offset) {
-	position += offset;
-	calcTranslation();
-}
-
-void Line::EdgePoint::setParent(Line* parent) {
-	this->parent = parent;
-}
-
 void Line::EdgePoint::setDelegate(SelectableDelegate* selectableDelegate) {
 	Selectable::setDelegate(selectableDelegate);
-}
-
-void Line::EdgePoint::calcTranslation() {
-	translation = glm::translate(glm::mat4(1), glm::vec3(position, 0));
-}
-
-const SquareMesh& Line::EdgePoint::mesh() const {
-	return selectableDelegate->getSquareMesh();
 }
 
 } /* namespace thesis */

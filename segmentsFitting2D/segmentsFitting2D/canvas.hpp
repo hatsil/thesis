@@ -33,7 +33,8 @@ class Canvas:
 	public CanvasDrawableDelegate,
 	public LinePlateDelegate,
 	public ControlPlateDelegate,
-	public DefaultPlateDelegate {
+	public DefaultPlateDelegate,
+	public BrokenLinePlateDelegate {
 public:
 	Canvas(size_t width, size_t height);
 	virtual ~Canvas();
@@ -50,6 +51,11 @@ public:
 	void lineDraw() override;
 	void setTempLine(double xposBegin, double yposBegin, double xposEnd, double yposEnd) override;
 	void packLine(double xposBegin, double yposBegin) override;
+	void brokenLineDraw() override;
+	void brokenLineLeftPress() override;
+	void brokenLineRightPress() override;
+	void brokenLineResign() override;
+	void brokenLinePosition(double xpos, double ypos) override;
 	
 	//MARK: RemovableDelegate
 	void addRemovable(Removable* removable) override;
@@ -63,9 +69,11 @@ public:
 	//MARK: plates setters and getters
 	void setDefaultPlate();
 	void setLinePlate();
+	void setBrokenLinePlate();
 	Selectable* getDefaultPlate() const;
 	Selectable* getControlPlate() const;
 	Selectable* getLinePlate() const;
+	Selectable* getBrokenLinePlate() const;
 
 	//MARK: public methods
 	void undo();
@@ -90,10 +98,12 @@ private:
 	DefaultPlate* defaultPlate;
 	ControlPlate* controlPlate;
 	LinePlate* linePlate;
+	BrokenLinePlate* brokenLinePlate;
 
 	std::set<Removable*, SelectablePtrComp> removables;
 	std::list<Removable*> rippedObjects;
 	std::list<CanvasDrawable*> drawables;
+	std::list<glm::vec2> brokenLineList;
 
 	glm::mat4* lineTransformation;
 

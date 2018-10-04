@@ -4,4 +4,5 @@
 #include "defaultPlate.hpp"
 #include "controlPlate.hpp"
 #include "linePlate.hpp"
+#include "brokenLinePlate.hpp"
 

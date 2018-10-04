@@ -15,7 +15,9 @@
 
 #include "globalVars.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include "lineMesh.hpp"
+
+#include <iterator>
 
 namespace thesis {
 Canvas::Canvas(size_t width, size_t height) :
@@ -25,13 +27,19 @@ Canvas::Canvas(size_t width, size_t height) :
 	removables(),
 	rippedObjects(),
 	drawables(),
+	brokenLineList(),
 	lineTransformation(nullptr) {
+
 	defaultPlate = new DefaultPlate;
 	controlPlate = new ControlPlate;
 	linePlate = new LinePlate;
+	brokenLinePlate = new BrokenLinePlate;
+
 	defaultPlate->setDelegate((DefaultPlateDelegate*)this);
 	linePlate->setDelegate((LinePlateDelegate*)this);
 	controlPlate->setDelegate((ControlPlateDelegate*)this);
+	brokenLinePlate->setDelegate((BrokenLinePlateDelegate*)this);
+	
 	//set defalt plate:
 	curPlate = prevPlate = defaultPlate;
 }
@@ -40,6 +48,7 @@ Canvas::~Canvas() {
 	delete defaultPlate;
 	delete linePlate;
 	delete controlPlate;
+	delete brokenLinePlate;
 
 	if(lineTransformation)
 		delete lineTransformation;
@@ -77,15 +86,7 @@ void Canvas::setTempLine(double xposBegin, double yposBegin, double xposEnd, dou
 	//calc transformation
 	glm::vec2 p1 = convertPos(xposBegin, yposBegin);
 	glm::vec2 p2 = convertPos(xposEnd, yposEnd);
-	glm::vec2 dir = p2 - p1;
-	float angle = std::acos(glm::dot(glm::normalize(dir), { 1, 0 }));
-
-	if (dir.y < 0)
-		angle = -angle;
-
-	glm::mat4 t = glm::translate(glm::mat4(1), glm::vec3(p1, 0));
-	glm::mat4 tr = glm::rotate(t, angle, glm::vec3(0, 0, 1));
-	lineTransformation = new glm::mat4(glm::scale(tr, glm::vec3(glm::length(dir), 0, 0)));
+	lineTransformation = new glm::mat4(LineMesh::calcTransformation(p1, p2));
 }
 
 void Canvas::packLine(double xposBegin, double yposBegin) {
@@ -104,6 +105,63 @@ void Canvas::packLine(double xposBegin, double yposBegin) {
 	line->setDelegate((RemovableDelegate*)this);
 	line->setDelegate((CanvasDrawableDelegate*)this);
 	line->inserted(drawables.insert(drawables.cend(), line));
+}
+
+void Canvas::brokenLineDraw() {
+	defaultDraw();
+	if(brokenLineList.size() > 1) {
+		float prevLineWidth;
+		glGetFloatv(GL_LINE_WIDTH, &prevLineWidth);
+		glLineWidth(boldLineWidth);
+
+		glm::vec2 p1 = brokenLineList.front();
+		for(auto it = std::next(brokenLineList.begin()); it != brokenLineList.cend(); ++it) {
+			glm::vec2 p2 = *it;
+			lineMesh().draw(LineMesh::calcTransformation(p1, p2), defaultLineColor);
+			p1 = p2;
+		}
+		
+		glLineWidth(prevLineWidth);
+	}
+}
+
+void Canvas::brokenLineLeftPress() {
+	double xpos, ypos;
+	canvasDelegate->getCursorPosition(xpos, ypos);
+	glm::vec2 position = convertPos(xpos, ypos);
+	if(brokenLineList.empty()) {
+		brokenLineList.push_back(position);
+	}
+	brokenLineList.insert(std::prev(brokenLineList.end()), position);
+	canvasDelegate->setDraw();
+}
+
+void Canvas::brokenLineRightPress() {
+	if(!brokenLineList.empty())
+		brokenLineList.pop_back();
+
+	if(brokenLineList.size() > 1) {
+		BrokenLine* brokenLine = new BrokenLine(brokenLineList);
+		brokenLine->setDelegate(canvasDelegate);
+		brokenLine->setDelegate((RemovableDelegate*)this);
+		brokenLine->setDelegate((CanvasDrawableDelegate*)this);
+		brokenLine->inserted(drawables.insert(drawables.cend(), brokenLine));
+	}
+
+	brokenLineList.clear();
+	canvasDelegate->setDrawForPicking();
+}
+
+void Canvas::brokenLineResign() {
+	brokenLineList.clear();
+	canvasDelegate->setDrawForPicking();
+}
+
+void Canvas::brokenLinePosition(double xpos, double ypos) {
+	if(!brokenLineList.empty()) {
+		brokenLineList.back() = convertPos(xpos, ypos);
+		canvasDelegate->setDraw();
+	}
 }
 
 void Canvas::addRemovable(Removable* removable) {
@@ -141,6 +199,10 @@ void Canvas::setLinePlate() {
 	curPlate = linePlate;
 }
 
+void Canvas::setBrokenLinePlate() {
+	curPlate = brokenLinePlate;
+}
+
 Selectable* Canvas::getDefaultPlate() const {
 	return defaultPlate;
 }
@@ -151,6 +213,10 @@ Selectable* Canvas::getControlPlate() const {
 
 Selectable* Canvas::getLinePlate() const {
 	return linePlate;
+}
+
+Selectable* Canvas::getBrokenLinePlate() const {
+	return brokenLinePlate;
 }
 
 void Canvas::clearRippedObjects() {
@@ -217,6 +283,7 @@ void Canvas::setDelegate(CanvasDelegate* canvasDelegate) {
 	defaultPlate->setDelegate(canvasDelegate);
 	linePlate->setDelegate(canvasDelegate);
 	controlPlate->setDelegate(canvasDelegate);
+	brokenLinePlate->setDelegate(canvasDelegate);
 }
 
 } /* namespace thesis */

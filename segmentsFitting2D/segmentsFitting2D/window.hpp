@@ -52,9 +52,11 @@ public:
 	void buttonViewport(int i) const override;
 	void setDefaultPlate() override;
 	void setLinePlate() override;
+	void setBrokenLinePlate() override;
 	Selectable* getDefaultPlate() const override;
 	Selectable* getControlPlate() const override;
 	Selectable* getLinePlate() const override;
+	Selectable* getBrokenLinePlate() const override;
 
 	//MARK: SelectableDelegate
 	void getCursorPosition(double& xpos, double& ypos) const override;

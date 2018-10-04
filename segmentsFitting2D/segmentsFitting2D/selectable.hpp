@@ -35,6 +35,7 @@ public:
 	virtual bool mark();
 	virtual bool unmark();
 	virtual bool isRemovable() const;
+	virtual void position(double xpos, double ypos);
 
 	virtual void setDelegate(SelectableDelegate* selectableDelegate);
 	

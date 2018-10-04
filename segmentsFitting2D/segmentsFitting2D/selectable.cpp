@@ -45,6 +45,8 @@ bool Selectable::isRemovable() const {
 	return false;
 }
 
+void Selectable::position(double, double) {}
+
 void Selectable::setDelegate(SelectableDelegate* selectableDelegate) {
 	this->selectableDelegate = selectableDelegate;
 	selectableDelegate->addSelectable(this);

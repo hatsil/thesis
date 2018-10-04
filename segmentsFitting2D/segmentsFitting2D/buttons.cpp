@@ -34,4 +34,22 @@ void LineButton::setRelatives() {
 	relatives.insert(buttonDelegate->getControlPlate());
 }
 
+
+
+//MARK: BrokenLineButton
+BrokenLineButton::BrokenLineButton() :
+	Button("./res/textures/buttons/line.jpg") {}
+
+BrokenLineButton::~BrokenLineButton() {}
+
+
+void BrokenLineButton::buttonOperation() {
+	buttonDelegate->setBrokenLinePlate();
+}
+
+void BrokenLineButton::setRelatives() {
+	relatives.insert(buttonDelegate->getBrokenLinePlate());
+	relatives.insert(buttonDelegate->getControlPlate());
+}
+
 } /* namespace thesis */

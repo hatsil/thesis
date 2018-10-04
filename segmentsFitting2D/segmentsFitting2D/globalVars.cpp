@@ -8,6 +8,7 @@ namespace thesis {
 	const glm::vec3 normalJointColor = glm::vec3(230.f/255.f, 0, 0);
 	const glm::vec3 selectedJointColor = glm::vec3(0, 204.f/255.f, 0);
 	const glm::vec3 markedJointColor = glm::vec3(250.f/255.f, 205.f/255.f, 0);
+	const glm::vec3 middlePressedJointColor = glm::vec3(0, 0, 230.f / 255.f);
 	
 	//scale factor
 	const glm::vec3 jointScaleFactor = glm::vec3(.015f);

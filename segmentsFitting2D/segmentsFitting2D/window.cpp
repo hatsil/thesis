@@ -110,7 +110,8 @@ Window::Window():
 
 Window::~Window() {
 	canvas->wait();
-	
+	canvas->clearRippedObjects();
+
 	delete canvas;
 	delete buttonsHolder;
 
@@ -322,12 +323,12 @@ void Window::cursorPositionCallback(double xpos, double ypos) {
 				drawStatus |= newMarkable->mark();
 			
 			marked = newMarkable;
-			
-			if(drawStatus) {
-				drawStatus = false;
-				draw();
-			}
 		}
+
+		if(selected)
+			selected->position(xpos, ypos);
+
+		drawIfNeeded();
 	}
 }
 
@@ -358,6 +359,10 @@ void Window::setLinePlate() {
 	canvas->setLinePlate();
 }
 
+void Window::setBrokenLinePlate() {
+	canvas->setBrokenLinePlate();
+}
+
 Selectable* Window::getDefaultPlate() const {
 	return canvas->getDefaultPlate();
 }
@@ -368,6 +373,10 @@ Selectable* Window::getControlPlate() const {
 
 Selectable* Window::getLinePlate() const {
 	return canvas->getLinePlate();
+}
+
+Selectable* Window::getBrokenLinePlate() const {
+	return canvas->getBrokenLinePlate();
 }
 
 void Window::drawAll() {
