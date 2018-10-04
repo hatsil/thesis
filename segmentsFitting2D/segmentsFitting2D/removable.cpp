@@ -18,7 +18,6 @@ bool Removable::isRemovable() const {
 
 void Removable::setDelegate(RemovableDelegate* removableDelegate) {
 	this->removableDelegate = removableDelegate;
-	removableDelegate->addRemovable(this);
 }
 
 } /* namespace thesis */

@@ -24,7 +24,6 @@ Canvas::Canvas(size_t width, size_t height) :
 	Drawable(),
 	width(width),
 	height(height),
-	removables(),
 	rippedObjects(),
 	drawables(),
 	brokenLineList(),
@@ -164,10 +163,6 @@ void Canvas::brokenLinePosition(double xpos, double ypos) {
 	}
 }
 
-void Canvas::addRemovable(Removable* removable) {
-	removables.insert(removable);
-}
-
 void Canvas::remove(const std::list<CanvasDrawable*>::iterator& it) {
 	drawables.erase(it);
 }
@@ -223,7 +218,6 @@ void Canvas::clearRippedObjects() {
 	for(auto it = rippedObjects.begin(); it != rippedObjects.end();) {
 		Removable* removable = *it;
 		canvasDelegate->removeSelectable(removable);
-		removables.erase(removable);
 		it = rippedObjects.erase(it);
 		delete removable;
 	}

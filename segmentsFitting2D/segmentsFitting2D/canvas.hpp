@@ -58,7 +58,6 @@ public:
 	void brokenLinePosition(double xpos, double ypos) override;
 	
 	//MARK: RemovableDelegate
-	void addRemovable(Removable* removable) override;
 	void addRipped(Removable* ripped) override;
 	glm::vec2 convertPos(double xpos, double ypos) const override;
 
@@ -100,7 +99,6 @@ private:
 	LinePlate* linePlate;
 	BrokenLinePlate* brokenLinePlate;
 
-	std::set<Removable*, SelectablePtrComp> removables;
 	std::list<Removable*> rippedObjects;
 	std::list<CanvasDrawable*> drawables;
 	std::list<glm::vec2> brokenLineList;

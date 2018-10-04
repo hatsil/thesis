@@ -9,7 +9,6 @@ class RemovableDelegate {
 public:
 	virtual ~RemovableDelegate() {}
 
-	virtual void addRemovable(Removable* removable) = 0;
 	virtual void addRipped(Removable* removable) = 0;
 	virtual glm::vec2 convertPos(double xpos, double ypos) const = 0;
 };

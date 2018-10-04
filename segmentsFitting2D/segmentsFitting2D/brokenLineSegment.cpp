@@ -48,7 +48,7 @@ bool BrokenLine::Segment::unmark() {
 void BrokenLine::Segment::ripMe() {
 	deleteParent = true;
 	parent->forEach([&](Joint* joint) {
-		removableDelegate->addRemovable(joint);
+		removableDelegate->addRipped(joint);
 		if(joint->segment)
 			removableDelegate->addRipped(joint->segment);
 	});
