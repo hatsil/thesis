@@ -18,6 +18,7 @@ public:
 	virtual const LineMesh& getLineMesh() const = 0;
 	virtual const SquareMesh& getSquareMesh() const = 0;
 	virtual const TexMesh& getTexMesh() const = 0;
+	virtual const CubicSplineMesh& getCubicSplineMesh() const = 0;
 };
 
 } /* namespace thesis */

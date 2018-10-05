@@ -154,6 +154,13 @@
     <ClCompile Include="canvas.cpp" />
     <ClCompile Include="canvasDrawable.cpp" />
     <ClCompile Include="canvasPlate.cpp" />
+    <ClCompile Include="cubicSplineMesh.cpp" />
+    <ClCompile Include="cubicSplineModel.cpp" />
+    <ClCompile Include="cubicSplineShader.cpp" />
+    <ClCompile Include="curve.cpp" />
+    <ClCompile Include="curveJoint.cpp" />
+    <ClCompile Include="curvePlate.cpp" />
+    <ClCompile Include="curveSegment.cpp" />
     <ClCompile Include="globalVars.cpp" />
     <ClCompile Include="controlPlate.cpp" />
     <ClCompile Include="countdownLatch.cpp" />
@@ -170,6 +177,7 @@
     <ClCompile Include="squareMesh.cpp" />
     <ClCompile Include="squareModel.cpp" />
     <ClCompile Include="stb_image.c" />
+    <ClCompile Include="tangentJoint.cpp" />
     <ClCompile Include="texMesh.cpp" />
     <ClCompile Include="selectable.cpp" />
     <ClCompile Include="random.cpp" />
@@ -200,6 +208,12 @@
     <ClInclude Include="canvasPlates.hpp" />
     <ClInclude Include="canvasPlatesDelegates.hpp" />
     <ClInclude Include="controlPlateDelegate.hpp" />
+    <ClInclude Include="cubicSplineMesh.hpp" />
+    <ClInclude Include="cubicSplineModel.hpp" />
+    <ClInclude Include="cubicSplineShader.hpp" />
+    <ClInclude Include="curve.hpp" />
+    <ClInclude Include="curvePlate.hpp" />
+    <ClInclude Include="curvePlateDelegate.hpp" />
     <ClInclude Include="defaultPlateDelegate.hpp" />
     <ClInclude Include="globalVars.hpp" />
     <ClInclude Include="concurrent.hpp" />

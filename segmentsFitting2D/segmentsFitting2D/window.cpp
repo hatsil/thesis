@@ -90,10 +90,12 @@ Window::Window():
 
 	simpleShader = new SimpleShader;
 	texShader = new TexShader;
+	cubicSplineShader = new CubicSplineShader;
 
 	lineMesh = new LineMesh(*simpleShader, {{0,0}, {1,0}});
 	squareMesh = new SquareMesh(*simpleShader);
 	texMesh = new TexMesh(*texShader);
+	cubicSplineMesh = new CubicSplineMesh(*cubicSplineShader);
 	
 	canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 	buttonsHolder = new ButtonsHolder(WINDOW_WIDTH, BUTTON_SIZE);
@@ -118,9 +120,11 @@ Window::~Window() {
 	delete texMesh;
 	delete squareMesh;
 	delete lineMesh;
+	delete cubicSplineMesh;
 
 	delete texShader;
 	delete simpleShader;
+	delete cubicSplineShader;
 
 	delete[] colorsBuffer;
 
@@ -263,10 +267,19 @@ void Window::mouseCallback(int button, int action, int mods) {
 
 	case GLFW_MOUSE_BUTTON_RIGHT:
 		if(action == GLFW_PRESS) {
-			if(selected) {
-				selected->rightPress();
-				drawIfNeeded();
-			}
+			double xpos, ypos;
+			getCursorPosition(xpos, ypos);
+			Selectable* newSelectable = getSelectable(xpos, ypos);
+
+			if(selected && selected != newSelectable)
+				selected->resign();
+
+			if(newSelectable)
+				newSelectable->rightPress();
+
+			selected = newSelectable;
+
+			drawIfNeeded();
 		} else {
 			if(selected) {
 				selected->rightRelease();
@@ -363,6 +376,10 @@ void Window::setBrokenLinePlate() {
 	canvas->setBrokenLinePlate();
 }
 
+void Window::setCurvePlate() {
+	canvas->setCurvePlate();
+}
+
 Selectable* Window::getDefaultPlate() const {
 	return canvas->getDefaultPlate();
 }
@@ -377,6 +394,10 @@ Selectable* Window::getLinePlate() const {
 
 Selectable* Window::getBrokenLinePlate() const {
 	return canvas->getBrokenLinePlate();
+}
+
+Selectable* Window::getCurvePlate() const {
+	return canvas->getCurvePlate();
 }
 
 void Window::drawAll() {
@@ -410,7 +431,7 @@ void Window::drawIfNeeded() {
 		canvas->clearRippedObjects();
 	}
 
-	if (drawForPickingStatus) {
+	if(drawForPickingStatus) {
 		drawForPickingStatus = false;
 		drawForPicking();
 	}
@@ -437,6 +458,10 @@ const SquareMesh& Window::getSquareMesh() const {
 
 const TexMesh& Window::getTexMesh() const {
 	return *texMesh;
+}
+
+const CubicSplineMesh& Window::getCubicSplineMesh() const {
+	return *cubicSplineMesh;
 }
 
 Selectable* Window::getSelectable(double xpos, double ypos) const {

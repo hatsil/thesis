@@ -5,8 +5,6 @@
 #include "removableDelegate.hpp"
 #include "canvasDrawableDelegate.hpp"
 
-#include <cmath>
-
 namespace thesis {
 
 Line::Line(const glm::vec2& q1, const glm::vec2& q2):
@@ -188,7 +186,6 @@ Line::EdgePoint::EdgePoint(const glm::vec2& position):
 	Selectable(),
 	position(position),
 	translation(glm::translate(glm::mat4(1), glm::vec3(position, 0))),
-	scale(glm::scale(glm::mat4(1), jointScaleFactor)),
 	color(normalJointColor),
 	pressed(false), released(false), moved(false),
 	xposPrev(0), yposPrev(0) {}
@@ -196,11 +193,11 @@ Line::EdgePoint::EdgePoint(const glm::vec2& position):
 Line::EdgePoint::~EdgePoint() {}
 
 void Line::EdgePoint::draw() const {
-	mesh().draw(translation * scale, color);
+	mesh().draw(translation * scale(), color);
 }
 
 void Line::EdgePoint::drawForPicking() const {
-	mesh().draw(translation * scale, pickingColorVec);
+	mesh().draw(translation * scale(), pickingColorVec);
 }
 
 void Line::EdgePoint::leftPress(Selectable* prev) {

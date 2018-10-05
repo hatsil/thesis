@@ -2,3 +2,4 @@
 
 #include "line.hpp"
 #include "brokenLine.hpp"
+#include "curve.hpp"

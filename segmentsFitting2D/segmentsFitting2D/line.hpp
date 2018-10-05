@@ -87,7 +87,6 @@ private:
 		Line* parent;
 
 		glm::mat4 translation;
-		glm::mat4 scale;
 		glm::vec3 color;
 		bool pressed, released, moved;
 		double xposPrev, yposPrev;

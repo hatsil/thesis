@@ -9,10 +9,12 @@ namespace thesis {
 
 class SimpleShader;
 class TexShader;
+class CubicSplineShader;
 
 class TexMesh;
 class SquareMesh;
 class LineMesh;
+class CubicSplineMesh;
 
 class Shader {
 public:
@@ -36,9 +38,11 @@ private:
 	//friends:
 	friend SimpleShader;
 	friend TexShader;
+	friend CubicSplineShader;
 	friend TexMesh;
 	friend SquareMesh;
 	friend LineMesh;
+	friend CubicSplineMesh;
 };
 
 } /* namespace thesis */

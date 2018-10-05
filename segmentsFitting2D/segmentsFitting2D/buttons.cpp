@@ -35,10 +35,9 @@ void LineButton::setRelatives() {
 }
 
 
-
 //MARK: BrokenLineButton
 BrokenLineButton::BrokenLineButton() :
-	Button("./res/textures/buttons/line.jpg") {}
+	Button("./res/textures/buttons/broken.jpg") {}
 
 BrokenLineButton::~BrokenLineButton() {}
 
@@ -49,6 +48,23 @@ void BrokenLineButton::buttonOperation() {
 
 void BrokenLineButton::setRelatives() {
 	relatives.insert(buttonDelegate->getBrokenLinePlate());
+	relatives.insert(buttonDelegate->getControlPlate());
+}
+
+
+//MARK: CurveButton
+CurveButton::CurveButton():
+	Button("./res/textures/buttons/curve.jpg") {}
+
+CurveButton::~CurveButton() {}
+
+
+void CurveButton::buttonOperation() {
+	buttonDelegate->setCurvePlate();
+}
+
+void CurveButton::setRelatives() {
+	relatives.insert(buttonDelegate->getCurvePlate());
 	relatives.insert(buttonDelegate->getControlPlate());
 }
 

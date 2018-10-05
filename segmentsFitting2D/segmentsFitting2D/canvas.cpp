@@ -33,11 +33,13 @@ Canvas::Canvas(size_t width, size_t height) :
 	controlPlate = new ControlPlate;
 	linePlate = new LinePlate;
 	brokenLinePlate = new BrokenLinePlate;
+	curvePlate = new CurvePlate;
 
 	defaultPlate->setDelegate((DefaultPlateDelegate*)this);
 	linePlate->setDelegate((LinePlateDelegate*)this);
 	controlPlate->setDelegate((ControlPlateDelegate*)this);
 	brokenLinePlate->setDelegate((BrokenLinePlateDelegate*)this);
+	curvePlate->setDelegate((CurvePlateDelegate*)this);
 	
 	//set defalt plate:
 	curPlate = prevPlate = defaultPlate;
@@ -48,6 +50,7 @@ Canvas::~Canvas() {
 	delete linePlate;
 	delete controlPlate;
 	delete brokenLinePlate;
+	delete curvePlate;
 
 	if(lineTransformation)
 		delete lineTransformation;
@@ -104,6 +107,24 @@ void Canvas::packLine(double xposBegin, double yposBegin) {
 	line->setDelegate((RemovableDelegate*)this);
 	line->setDelegate((CanvasDrawableDelegate*)this);
 	line->inserted(drawables.insert(drawables.cend(), line));
+}
+
+void Canvas::packCurve(double xposBegin, double yposBegin) {
+	if (lineTransformation) {
+		delete lineTransformation;
+		lineTransformation = nullptr;
+	}
+
+	double xposEnd;
+	double yposEnd;
+	canvasDelegate->getCursorPosition(xposEnd, yposEnd);
+	glm::vec2 p1 = convertPos(xposBegin, yposBegin);
+	glm::vec2 p2 = convertPos(xposEnd, yposEnd);
+	Curve* curve = new Curve(p1, p2);
+	curve->setDelegate(canvasDelegate);
+	curve->setDelegate((RemovableDelegate*)this);
+	curve->setDelegate((CanvasDrawableDelegate*)this);
+	curve->inserted(drawables.insert(drawables.cend(), curve));
 }
 
 void Canvas::brokenLineDraw() {
@@ -198,6 +219,10 @@ void Canvas::setBrokenLinePlate() {
 	curPlate = brokenLinePlate;
 }
 
+void Canvas::setCurvePlate() {
+	curPlate = curvePlate;
+}
+
 Selectable* Canvas::getDefaultPlate() const {
 	return defaultPlate;
 }
@@ -212,6 +237,10 @@ Selectable* Canvas::getLinePlate() const {
 
 Selectable* Canvas::getBrokenLinePlate() const {
 	return brokenLinePlate;
+}
+
+Selectable* Canvas::getCurvePlate() const {
+	return curvePlate;
 }
 
 void Canvas::clearRippedObjects() {
@@ -278,6 +307,7 @@ void Canvas::setDelegate(CanvasDelegate* canvasDelegate) {
 	linePlate->setDelegate(canvasDelegate);
 	controlPlate->setDelegate(canvasDelegate);
 	brokenLinePlate->setDelegate(canvasDelegate);
+	curvePlate->setDelegate(canvasDelegate);
 }
 
 } /* namespace thesis */

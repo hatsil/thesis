@@ -53,10 +53,12 @@ public:
 	void setDefaultPlate() override;
 	void setLinePlate() override;
 	void setBrokenLinePlate() override;
+	void setCurvePlate() override;
 	Selectable* getDefaultPlate() const override;
 	Selectable* getControlPlate() const override;
 	Selectable* getLinePlate() const override;
 	Selectable* getBrokenLinePlate() const override;
+	Selectable* getCurvePlate() const override;
 
 	//MARK: SelectableDelegate
 	void getCursorPosition(double& xpos, double& ypos) const override;
@@ -69,6 +71,7 @@ public:
 	const LineMesh& getLineMesh() const override;
 	const SquareMesh& getSquareMesh() const override;
 	const TexMesh& getTexMesh() const override;
+	const CubicSplineMesh& getCubicSplineMesh() const override;
 
 private:
 	//MARK: private fields
@@ -87,11 +90,13 @@ private:
 	//MARK: shaders
 	SimpleShader* simpleShader;
 	TexShader* texShader;
+	CubicSplineShader* cubicSplineShader;
 
 	//MARK: meshes
 	LineMesh* lineMesh;
 	SquareMesh* squareMesh;
 	TexMesh* texMesh;
+	CubicSplineMesh* cubicSplineMesh;
 
 	//MARK: current selectables
 	Selectable* selected;

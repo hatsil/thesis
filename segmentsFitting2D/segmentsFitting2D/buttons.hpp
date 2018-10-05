@@ -11,7 +11,6 @@ public:
 protected:
 	void buttonOperation() override;
 	void setRelatives() override;
-
 };
 
 class LineButton: public Button {
@@ -22,7 +21,6 @@ public:
 protected:
 	void buttonOperation() override;
 	void setRelatives() override;
-
 };
 
 class BrokenLineButton: public Button {
@@ -33,7 +31,16 @@ public:
 protected:
 	void buttonOperation() override;
 	void setRelatives() override;
+};
 
+class CurveButton: public Button {
+public:
+	CurveButton();
+	virtual ~CurveButton();
+
+protected:
+	void buttonOperation() override;
+	void setRelatives() override;
 };
 
 } /* namespace thesis */

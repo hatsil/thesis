@@ -21,7 +21,7 @@ ButtonsHolder::ButtonsHolder(size_t width, size_t buttonSize):
 	buttons() {}
 
 ButtonsHolder& ButtonsHolder::initButtons() {
-	buttons = {new BrokenLineButton, new LineButton, new DefaultButton};
+	buttons = {new LineButton, new BrokenLineButton, new CurveButton, new DefaultButton};
 	return *this;
 }
 

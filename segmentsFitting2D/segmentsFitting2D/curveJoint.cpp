@@ -1,9 +1,7 @@
-#include "brokenLine.hpp"
-
-#include <iostream>
+#include "curve.hpp"
 
 namespace thesis {
-BrokenLine::Joint::Joint(const glm::vec2& position):
+Curve::Joint::Joint(const glm::vec2& position):
 	Removable(),
 	position(position),
 	deleteParent(false),
@@ -11,15 +9,19 @@ BrokenLine::Joint::Joint(const glm::vec2& position):
 	translation(glm::translate(glm::mat4(1), glm::vec3(position, 0))),
 	color(normalJointColor),
 	isRipped(false), pressed(false), released(false), moved(false),
-	xposPrev(0), yposPrev(0) {}
+	xposPrev(0), yposPrev(0) {
+	tj = new TangentJoint;
+	tj->setParent(this);
+}
 
-BrokenLine::Joint::~Joint() {
+Curve::Joint::~Joint() {
+	delete tj;
 	if(deleteParent) {
 		delete parent;
 	}
 }
 
-void BrokenLine::Joint::createSegment() {
+void Curve::Joint::createSegment() {
 	if(!parent->isLast(it)) {
 		segment = new Segment();
 		segment->setParent(parent);
@@ -27,8 +29,8 @@ void BrokenLine::Joint::createSegment() {
 	}
 }
 
-void BrokenLine::Joint::leftPress(Selectable* prev) {
-	parent->leftPress(prev);
+void Curve::Joint::leftPress(Selectable*) {
+	parent->leftPress(nullptr);
 	pressed = true;
 	released = false;
 	moved = false;
@@ -36,13 +38,13 @@ void BrokenLine::Joint::leftPress(Selectable* prev) {
 	selectableDelegate->getCursorPosition(xposPrev, yposPrev);
 }
 
-void BrokenLine::Joint::leftRelease() {
+void Curve::Joint::leftRelease() {
 	released = true;
 	if(moved) selectableDelegate->setDrawForPicking();
 	else selectableDelegate->setDraw();
 }
 
-void BrokenLine::Joint::leftPosition(double xpos, double ypos) {
+void Curve::Joint::leftPosition(double xpos, double ypos) {
 	if(pressed && !released) {
 		moved = true;
 		glm::vec2 p0 = parent->convertPos(xposPrev, yposPrev);
@@ -58,11 +60,11 @@ void BrokenLine::Joint::leftPosition(double xpos, double ypos) {
 	}
 }
 
-void BrokenLine::Joint::resign() {
+void Curve::Joint::resign() {
 	parent->resign();
 }
 
-void BrokenLine::Joint::middlePress() {
+void Curve::Joint::middlePress() {
 	parent->middlePress();
 	pressed = true;
 	released = false;
@@ -70,15 +72,21 @@ void BrokenLine::Joint::middlePress() {
 	color = middlePressedJointColor;
 }
 
-void BrokenLine::Joint::middleRelease() {
-	parent->middleRelease(this);
-	if(!isRipped) {
-		released = true;
-		color = selectedJointColor;
+void Curve::Joint::middleRelease() {
+	if(selectableDelegate->getSelectable() == tj) {
+		parent->color = defaultLineColor;
+		parent->released = true;
+		ripMe();
+	} else {
+		parent->middleRelease(this);
+		if(!isRipped) {
+			released = true;
+			color = selectedJointColor;
+		}
 	}
 }
 
-bool BrokenLine::Joint::mark() {
+bool Curve::Joint::mark() {
 	if(!pressed) {
 		color = markedJointColor;
 		return true;
@@ -86,7 +94,7 @@ bool BrokenLine::Joint::mark() {
 	return false;
 }
 
-bool BrokenLine::Joint::unmark() {
+bool Curve::Joint::unmark() {
 	if(!pressed) {
 		color = normalJointColor;
 		return true;
@@ -94,25 +102,28 @@ bool BrokenLine::Joint::unmark() {
 	return false;
 }
 
-void BrokenLine::Joint::setDelegate(SelectableDelegate* selectableDelegate) {
+void Curve::Joint::setDelegate(SelectableDelegate* selectableDelegate) {
 	if(segment)
 		segment->setDelegate(selectableDelegate);
 
+	tj->setDelegate(selectableDelegate);
 	Selectable::setDelegate(selectableDelegate);
 }
 
-void BrokenLine::Joint::ripMe() {
+void Curve::Joint::ripMe() {
 	isRipped = true;
 
 	if(parent->canTakeDemolitionOwnership()) {
 		deleteParent = true;
-		parent->forEach([&] (Joint* joint) {
+		parent->forEach([&](Joint* joint) {
+			selectableDelegate->removeSelectable(joint->tj);
 			removableDelegate->addRipped(joint);
 			if(joint->segment)
 				removableDelegate->addRipped(joint->segment);
 		});
 		parent->clear();
 	} else {
+		selectableDelegate->removeSelectable(tj);
 		removableDelegate->addRipped(this);
 		parent->remove(this);
 		if(segment) {
@@ -130,38 +141,46 @@ void BrokenLine::Joint::ripMe() {
 	selectableDelegate->setClearRemovables();
 }
 
-void BrokenLine::Joint::setDelegate(RemovableDelegate* removableDelegate) {
+void Curve::Joint::setDelegate(RemovableDelegate* removableDelegate) {
 	if(segment)
 		segment->setDelegate(removableDelegate);
 
 	Removable::setDelegate(removableDelegate);
 }
 
-void BrokenLine::Joint::draw() const {
+void Curve::Joint::draw() const {
 	if(segment)
 		segment->draw();
 
 	if(parent->pressed)
 		mesh().draw(translation * scale(), color);
+
+	if(pressed)
+		tj->draw();
 }
 
-void BrokenLine::Joint::drawForPicking() const {
+void Curve::Joint::drawForPicking() const {
 	if(segment)
 		segment->drawForPicking();
 
 	if(parent->isBold())
 		mesh().draw(translation * scale(), pickingColorVec);
+
+	if(pressed)
+		tj->drawForPicking();
 }
 
-void BrokenLine::Joint::controlDraw() const {
+void Curve::Joint::controlDraw() const {
 	if(segment)
 		segment->controlDraw();
 
 	mesh().draw(translation * scale(), color);
+	tj->draw();
 }
 
-void BrokenLine::Joint::controlDrawForPicking() const {
+void Curve::Joint::controlDrawForPicking() const {
 	mesh().draw(translation * scale(), pickingColorVec);
+	tj->drawForPicking();
 }
 
 } /* namespace thesis*/

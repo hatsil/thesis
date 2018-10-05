@@ -32,7 +32,6 @@ protected:
 
 	virtual void buttonOperation() = 0;
 	virtual void setRelatives() = 0;
-	
 
 	std::set<Selectable*> relatives;
 	bool isRelative(Selectable* selectable) const;

@@ -4,7 +4,7 @@
 #include "globalVars.hpp"
 #include "selectable.hpp"
 #include "removable.hpp"
-#include "lineMesh.hpp"
+#include "cubicSplineMesh.hpp"
 #include "squareMesh.hpp"
 
 #include "selectableDelegate.hpp"
@@ -19,10 +19,10 @@
 #include <iterator>
 
 namespace thesis {
-class BrokenLine: public CanvasDrawable {
+class Curve: public CanvasDrawable {
 public:
-	BrokenLine(const std::list<glm::vec2> & points);
-	virtual ~BrokenLine();
+	Curve(const glm::vec2& q1, const glm::vec2& q2);
+	virtual ~Curve();
 
 	//MARK: CanvasDrawable
 	void defaultDraw() const override;
@@ -50,6 +50,8 @@ private:
 		void leftPress(Selectable* prev) override;
 		void leftRelease() override;
 		void leftPosition(double xpos, double ypos) override;
+		void rightPress() override;
+		void rightRelease() override;
 		void resign() override;
 		void middlePress() override;
 		void middleRelease() override;
@@ -64,7 +66,7 @@ private:
 		//MARK: public methods
 		void controlDraw() const;
 
-		inline void setParent(BrokenLine* parent) {
+		inline void setParent(Curve* parent) {
 			this->parent = parent;
 			parent->add(this);
 		}
@@ -75,17 +77,13 @@ private:
 
 	private:
 		//MARK: private fields
-		BrokenLine* parent;
+		Curve* parent;
 		std::list<Joint*>::iterator it;
 		bool deleteParent;
 
 		//MARK: private methods
-		inline glm::mat4 calcTransformation() const {
-			return LineMesh::calcTransformation(joint1()->getPosition(), joint2()->getPosition());
-		}
-
-		inline const LineMesh& mesh() const {
-			return selectableDelegate->getLineMesh();
+		inline const CubicSplineMesh& mesh() const {
+			return selectableDelegate->getCubicSplineMesh();
 		}
 
 		inline Joint* joint1() const {
@@ -95,8 +93,22 @@ private:
 		inline Joint* joint2() const {
 			return *std::next(it);
 		}
+
+		inline glm::mat4x2 f() const {
+			const glm::vec2& p1 = joint2()->getPosition();
+			const glm::vec2& dp1 = joint2()->getTangent();
+
+			const glm::vec2& d = joint1()->getPosition();
+			const glm::vec2& c = joint1()->getTangent();
+
+			glm::vec2 b = 3.f*p1 - dp1 - 2.f*c - 3.f*d;
+			glm::vec2 a = dp1 - 2.f*p1 + c + 2.f*d;
+
+			return { a, b, c, d };
+		}
 	};
 
+	class TangentJoint;
 	class Joint: public Removable {
 	public:
 		Joint(const glm::vec2& position);
@@ -110,15 +122,15 @@ private:
 			this->it = std::move(it);
 		}
 
-		inline void setParent(BrokenLine* parent) {
+		inline void setParent(Curve* parent) {
 			this->parent = parent;
 			parent->add(this);
 		}
 
 		void createSegment();
-		
+
 		inline void destroySegment() {
-			if(segment)
+			if (segment)
 				delete segment;
 		}
 
@@ -127,7 +139,7 @@ private:
 		void drawForPicking() const override;
 
 		//MARK: Selectable
-		void leftPress(Selectable* prev) override;
+		void leftPress(Selectable*) override;
 		void leftRelease() override;
 		void leftPosition(double xpos, double ypos) override;
 		void resign() override;
@@ -145,6 +157,7 @@ private:
 		inline void setDefaultState() {
 			pressed = released = moved = false;
 			color = normalJointColor;
+			tj->setDefaultState();
 		}
 
 		inline void addOffset(const glm::vec2& offset) {
@@ -156,16 +169,25 @@ private:
 			return position;
 		}
 
+		inline const glm::vec2& getTangent() const {
+			return tj->getTangent();
+		}
+
+		inline glm::vec2 convertPos(double xpos, double ypos) const {
+			return parent->convertPos(xpos, ypos);
+		}
+
 		void controlDraw() const;
 		void controlDrawForPicking() const;
 
 	private:
 		//MARK: private fields
 		glm::vec2 position;
+		TangentJoint* tj;
 		Segment* segment;
 		std::list<Joint*>::iterator it;
 		bool deleteParent;
-		BrokenLine* parent;
+		Curve* parent;
 
 		glm::mat4 translation;
 		glm::vec3 color;
@@ -179,9 +201,76 @@ private:
 
 		inline void calcTranslation() {
 			translation = glm::translate(glm::mat4(1), glm::vec3(position, 0));
+			tj->calcTranslation();
 		}
 
 		//MARK: friends
+		friend Segment;
+		friend TangentJoint;
+	};
+
+	class TangentJoint: public Selectable {
+	public:
+		TangentJoint();
+		virtual ~TangentJoint();
+
+		inline void setParent(Joint* parent) {
+			this->parent = parent;
+		}
+
+		//MARK: Drawable
+		void draw() const override;
+		void drawForPicking() const override;
+
+		//MARK: Selectable
+		void leftPress(Selectable*) override;
+		void leftRelease() override;
+		void leftPosition(double xpos, double ypos) override;
+		void middlePress() override;
+		void middleRelease() override;
+		void resign() override;
+		
+		bool mark() override;
+		bool unmark() override;
+		void setDelegate(SelectableDelegate* selectableDelegate) override;
+
+		//MARK: public methods
+		inline void setDefaultState() {
+			pressed = released = moved = false;
+			color = normalTangentJointColor;
+		}
+
+		inline void addOffset(const glm::vec2& offset) {
+			tangent += offset;
+			calcTranslation();
+		}
+
+		inline const glm::vec2& getTangent() const {
+			return tangent;
+		}
+
+	private:
+		//MARK: private fields
+		glm::vec2 tangent;
+		Joint* parent;
+
+		glm::mat4 translation;
+		glm::vec3 color;
+		bool pressed, released, moved;
+		double xposPrev, yposPrev;
+
+		//MARK: private methods
+		inline const SquareMesh& mesh() const {
+			return selectableDelegate->getSquareMesh();
+		}
+
+		inline void calcTranslation() {
+			translation = glm::translate(glm::mat4(1),
+				glm::vec3(parent->getPosition() + tangent, 0));
+		}
+
+		//MARK: friends
+		friend Joint;
 		friend Segment;
 	};
 
@@ -210,11 +299,11 @@ private:
 	inline void add(Selectable* relative) {
 		relatives.insert(relative);
 	}
-	
+
 	inline void remove(Selectable* relative) {
 		relatives.erase(relative);
 	}
-	
+
 	inline bool isRelative(Selectable* selectable) const {
 		return relatives.find(selectable) != relatives.cend();
 	}
@@ -228,10 +317,10 @@ private:
 		for(Joint* joint : joints)
 			func(joint);
 	}
-	
+
 	template<class Function>
 	void forEach(const Function& func) {
-		for(Joint* joint : joints)
+		for (Joint* joint : joints)
 			func(joint);
 	}
 
@@ -260,6 +349,16 @@ private:
 	inline void clear() {
 		joints.clear();
 		canvasDrawableDelegate->remove(it);
+	}
+
+	inline void addJointAfter(const glm::vec2& position,
+		const std::list<Joint*>::iterator& it) {
+		Joint* joint = new Joint(position);
+		joint->setParent(this);
+		joint->inserted(joints.insert(std::next(it), joint));
+		joint->createSegment();
+		joint->setDelegate(removableDelegate);
+		joint->setDelegate(selectableDelegate);
 	}
 
 	//MARK: friends

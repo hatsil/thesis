@@ -10,6 +10,9 @@ namespace thesis {
 	extern const glm::vec3 markedJointColor;
 	extern const glm::vec3 middlePressedJointColor;
 
+	extern const glm::vec3 normalTangentJointColor;
+	extern const glm::vec3 selectedTangentJointColor;
+
 	//scale factor
 	extern const glm::vec3 jointScaleFactor;
 
@@ -22,4 +25,8 @@ namespace thesis {
 
 	//MARK: buttons holder background color
 	extern const glm::vec3 buttonsHolderBackgroundColor;
+
+	//MARK: default functions
+	const glm::mat4& scale();
+	const glm::mat4& rot45();
 }

@@ -34,7 +34,8 @@ class Canvas:
 	public LinePlateDelegate,
 	public ControlPlateDelegate,
 	public DefaultPlateDelegate,
-	public BrokenLinePlateDelegate {
+	public BrokenLinePlateDelegate,
+	public CurvePlateDelegate {
 public:
 	Canvas(size_t width, size_t height);
 	virtual ~Canvas();
@@ -57,6 +58,16 @@ public:
 	void brokenLineResign() override;
 	void brokenLinePosition(double xpos, double ypos) override;
 	
+	void curveDraw() override {
+		lineDraw();
+	}
+	
+	void setTempCurve(double xposBegin, double yposBegin, double xposEnd, double yposEnd) override {
+		setTempLine(xposBegin, yposBegin, xposEnd, yposEnd);
+	}
+
+	void packCurve(double xposBegin, double yposBegin) override;
+	
 	//MARK: RemovableDelegate
 	void addRipped(Removable* ripped) override;
 	glm::vec2 convertPos(double xpos, double ypos) const override;
@@ -69,10 +80,12 @@ public:
 	void setDefaultPlate();
 	void setLinePlate();
 	void setBrokenLinePlate();
+	void setCurvePlate();
 	Selectable* getDefaultPlate() const;
 	Selectable* getControlPlate() const;
 	Selectable* getLinePlate() const;
 	Selectable* getBrokenLinePlate() const;
+	Selectable* getCurvePlate() const;
 
 	//MARK: public methods
 	void undo();
@@ -98,6 +111,7 @@ private:
 	ControlPlate* controlPlate;
 	LinePlate* linePlate;
 	BrokenLinePlate* brokenLinePlate;
+	CurvePlate* curvePlate;
 
 	std::list<Removable*> rippedObjects;
 	std::list<CanvasDrawable*> drawables;
