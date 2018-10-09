@@ -9,7 +9,8 @@
 #include <GL/glew.h>
 
 #include "window.hpp"
-#include "getColorOnPress.hpp"
+
+#include <cmath>
 
 namespace thesis {
 static const size_t CANVAS_WIDTH = 800;
@@ -24,13 +25,12 @@ static GLFWwindow* makeWindow() {
 	std::string what("Failed init window");
 	bool needTermination = false;
 	GLFWwindow* glfwWindow = nullptr;
-
 	//Initialize the library:
-	if (glfwInit()) {
+	if(glfwInit()) {
 		needTermination = true;
-		if ((glfwWindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, 0, 0))) {
+		if((glfwWindow = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, 0, 0))) {
 			glfwMakeContextCurrent(glfwWindow);
-			if (glewInit() != GLEW_OK) {
+			if(glewInit() != GLEW_OK) {
 				what += ": Glew failed to initialize";
 				goto bad;
 			}
@@ -56,26 +56,23 @@ bad:
 
 void keyCallback1(GLFWwindow* glfwWindow, int key, int scancode, int action, int mods) {
 	Window* window;
-	if (!glfwWindowShouldClose(glfwWindow) &&
-		(window = (Window*)glfwGetWindowUserPointer(glfwWindow))) {
+	if(!glfwWindowShouldClose(glfwWindow) &&
+		(window = (Window*)glfwGetWindowUserPointer(glfwWindow)))
 		window->keyCallback(key, scancode, action, mods);
-	}
 }
 
 void mouseCallback1(GLFWwindow* glfwWindow, int button, int action, int mods) {
 	Window* window;
-	if (!glfwWindowShouldClose(glfwWindow) &&
-		(window = (Window*)glfwGetWindowUserPointer(glfwWindow))) {
+	if(!glfwWindowShouldClose(glfwWindow) &&
+		(window = (Window*)glfwGetWindowUserPointer(glfwWindow)))
 		window->mouseCallback(button, action, mods);
-	}
 }
 
 void cursorPositionCallback1(GLFWwindow* glfwWindow, double xpos, double ypos) {
 	Window* window;
-	if (!glfwWindowShouldClose(glfwWindow) &&
-		(window = (Window*)glfwGetWindowUserPointer(glfwWindow))) {
+	if(!glfwWindowShouldClose(glfwWindow) &&
+		(window = (Window*)glfwGetWindowUserPointer(glfwWindow)))
 		window->cursorPositionCallback(xpos, ypos);
-	}
 }
 
 Window::Window():
@@ -83,26 +80,30 @@ Window::Window():
 	selectables(),
 	width(WINDOW_WIDTH),
 	height(WINDOW_HEIGHT),
+	prevTime(std::chrono::system_clock::now()),
+	waitingTime(0),
 	drawStatus(false),
 	drawForPickingStatus(false),
-	clearRemovablesStatus(false) {
+	clearRemovablesStatus(false),
+	selected(nullptr),
+	marked(nullptr) {
 	colorsBuffer = new uchar[WINDOW_WIDTH * WINDOW_HEIGHT * (size_t)4];
 
 	simpleShader = new SimpleShader;
 	texShader = new TexShader;
 	cubicSplineShader = new CubicSplineShader;
 
-	lineMesh = new LineMesh(*simpleShader, {{0,0}, {1,0}});
+	lineMesh = new LineMesh(*simpleShader);
 	squareMesh = new SquareMesh(*simpleShader);
 	texMesh = new TexMesh(*texShader);
 	cubicSplineMesh = new CubicSplineMesh(*cubicSplineShader);
-	
+
 	canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
 	buttonsHolder = new ButtonsHolder(WINDOW_WIDTH, BUTTON_SIZE);
 
-	buttonsHolder->initButtons().setDelegate(this);
+	buttonsHolder->setDelegate(this);
 	canvas->setDelegate(this);
-	
+
 	glfwSetWindowUserPointer(glfwWindow, this);
 
 	drawAll();
@@ -134,6 +135,14 @@ Window::~Window() {
 
 bool Window::isActive() const {
 	return !glfwWindowShouldClose(glfwWindow);
+}
+
+bool Window::waitForever() const {
+	return !drawStatus;
+}
+
+double Window::getWaitingTime() const {
+	return waitingTime;
 }
 
 void Window::buttonsHolderViewport() const {
@@ -215,6 +224,7 @@ void Window::keyCallback(int key, int scancode, int action, int mods) {
 
 	case GLFW_KEY_DELETE:
 		if(action == GLFW_RELEASE && selected && selected->isRemovable()) {
+			selected->resign();
 			((Removable*)selected)->ripMe();
 			drawIfNeeded();
 		}
@@ -380,6 +390,10 @@ void Window::setCurvePlate() {
 	canvas->setCurvePlate();
 }
 
+void Window::setSketchPlate() {
+	canvas->setSketchPlate();
+}
+
 Selectable* Window::getDefaultPlate() const {
 	return canvas->getDefaultPlate();
 }
@@ -400,10 +414,19 @@ Selectable* Window::getCurvePlate() const {
 	return canvas->getCurvePlate();
 }
 
+Selectable* Window::getSketchPlate() const {
+	return canvas->getSketchPlate();
+}
+
 void Window::drawAll() {
+	if(clearRemovablesStatus) {
+		canvas->clearRippedObjects();
+		selected = marked = nullptr;
+	}
 	drawStatus = drawForPickingStatus = false;
-	draw();
+	prevTime = std::chrono::system_clock::now();
 	drawForPicking();
+	draw();
 }
 
 void Window::setDraw() {
@@ -431,15 +454,27 @@ void Window::drawIfNeeded() {
 		canvas->clearRippedObjects();
 	}
 
-	if(drawForPickingStatus) {
-		drawForPickingStatus = false;
+	if(drawForPickingStatus)
 		drawForPicking();
-	}
 
 	if(drawStatus) {
-		drawStatus = false;
-		draw();
+		auto curTime = std::chrono::system_clock::now();
+		if(drawForPickingStatus) {
+			drawForPickingStatus = false;
+			drawStatus = false;
+			prevTime = curTime;
+			draw();
+		} else {
+			std::chrono::duration<double, std::milli> dur = curTime - prevTime;
+			double count = dur.count();
+			if(count > 30) {
+				drawStatus = false;
+				prevTime = curTime;
+				draw();
+			} else waitingTime = (31 - count) / 1000.;
+		}
 	}
+	drawForPickingStatus = false;
 }
 
 Selectable* Window::getSelectable() const {
@@ -464,17 +499,21 @@ const CubicSplineMesh& Window::getCubicSplineMesh() const {
 	return *cubicSplineMesh;
 }
 
+const SimpleShader& Window::getSimpleShader() const {
+	return *simpleShader;
+}
+
 Selectable* Window::getSelectable(double xpos, double ypos) const {
 	int x = (int)xpos;
 	int y = (int)height-1 - (int)ypos;
 	
-	if(x < 0 || x >= width || y < 0 || y >= height)
+	if(x < 0 || x >= (int)width || y < 0 || y >= (int)height)
 		return nullptr;
 	
 	size_t i = ((size_t)y * width + (size_t)x) * (size_t)4;
 	uchar* pixel = colorsBuffer + i;
 	uint colorID = (uint)pixel[2] + ((uint)pixel[1] << 8) + ((uint)pixel[0] << 16);
-	
+
 	if(colorID == 0)
 		return nullptr;
 	
@@ -506,11 +545,6 @@ void Window::controlRelease() {
 	if(marked) {
 		marked->unmark();
 		marked = nullptr;
-	}
-
-	if(selected) {
-		selected->resign();
-		selected = nullptr;
 	}
 
 	buttonsHolder->controlRelease();

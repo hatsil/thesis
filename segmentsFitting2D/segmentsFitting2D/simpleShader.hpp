@@ -5,7 +5,7 @@
 #include "shader.hpp"
 
 namespace thesis {
-class SimpleShader : public Shader {
+class SimpleShader: public Shader {
 public:
 	SimpleShader();
 	virtual ~SimpleShader();

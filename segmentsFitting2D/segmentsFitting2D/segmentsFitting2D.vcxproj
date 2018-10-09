@@ -18,6 +18,120 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="batchQueue.hpp" />
+    <ClInclude Include="blockingQueue.hpp" />
+    <ClInclude Include="brokenLine.hpp" />
+    <ClInclude Include="brokenLinePlate.hpp" />
+    <ClInclude Include="brokenLinePlateDelegate.hpp" />
+    <ClInclude Include="button.hpp" />
+    <ClInclude Include="buttonDelegate.hpp" />
+    <ClInclude Include="buttons.hpp" />
+    <ClInclude Include="buttonsHolder.hpp" />
+    <ClInclude Include="canvas.hpp" />
+    <ClInclude Include="canvasDelegate.hpp" />
+    <ClInclude Include="canvasDrawable.hpp" />
+    <ClInclude Include="canvasDrawableDelegate.hpp" />
+    <ClInclude Include="canvasDrawables.hpp" />
+    <ClInclude Include="canvasPlate.hpp" />
+    <ClInclude Include="canvasPlates.hpp" />
+    <ClInclude Include="canvasPlatesDelegates.hpp" />
+    <ClInclude Include="concurrent.hpp" />
+    <ClInclude Include="controlPlate.hpp" />
+    <ClInclude Include="controlPlateDelegate.hpp" />
+    <ClInclude Include="countdownLatch.hpp" />
+    <ClInclude Include="cubicSplineMesh.hpp" />
+    <ClInclude Include="cubicSplineModel.hpp" />
+    <ClInclude Include="cubicSplineShader.hpp" />
+    <ClInclude Include="curve.hpp" />
+    <ClInclude Include="curvePlate.hpp" />
+    <ClInclude Include="curvePlateDelegate.hpp" />
+    <ClInclude Include="defaultPlate.hpp" />
+    <ClInclude Include="defaultPlateDelegate.hpp" />
+    <ClInclude Include="defs.hpp" />
+    <ClInclude Include="display.hpp" />
+    <ClInclude Include="drawable.hpp" />
+    <ClInclude Include="executor.hpp" />
+    <ClInclude Include="getColorOnPress.hpp" />
+    <ClInclude Include="globalVars.hpp" />
+    <ClInclude Include="interactionsHandler.hpp" />
+    <ClInclude Include="line.hpp" />
+    <ClInclude Include="lineMesh.hpp" />
+    <ClInclude Include="linePlate.hpp" />
+    <ClInclude Include="linePlateDelegate.hpp" />
+    <ClInclude Include="meshes.hpp" />
+    <ClInclude Include="random.hpp" />
+    <ClInclude Include="removable.hpp" />
+    <ClInclude Include="removableDelegate.hpp" />
+    <ClInclude Include="selectable.hpp" />
+    <ClInclude Include="selectableDelegate.hpp" />
+    <ClInclude Include="semaphore.hpp" />
+    <ClInclude Include="shader.hpp" />
+    <ClInclude Include="shaders.hpp" />
+    <ClInclude Include="simpleShader.hpp" />
+    <ClInclude Include="sketch.hpp" />
+    <ClInclude Include="sketchPlate.hpp" />
+    <ClInclude Include="sketchPlateDelegate.hpp" />
+    <ClInclude Include="squareMesh.hpp" />
+    <ClInclude Include="squareModel.hpp" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texMesh.hpp" />
+    <ClInclude Include="texShader.hpp" />
+    <ClInclude Include="texture.hpp" />
+    <ClInclude Include="window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="brokenLine.cpp" />
+    <ClCompile Include="brokenLineJoint.cpp" />
+    <ClCompile Include="brokenLinePlate.cpp" />
+    <ClCompile Include="brokenLineSegment.cpp" />
+    <ClCompile Include="button.cpp" />
+    <ClCompile Include="buttons.cpp" />
+    <ClCompile Include="buttonsHolder.cpp" />
+    <ClCompile Include="canvas.cpp" />
+    <ClCompile Include="canvasDrawable.cpp" />
+    <ClCompile Include="canvasPlate.cpp" />
+    <ClCompile Include="controlPlate.cpp" />
+    <ClCompile Include="countdownLatch.cpp" />
+    <ClCompile Include="cubicSplineMesh.cpp" />
+    <ClCompile Include="cubicSplineModel.cpp" />
+    <ClCompile Include="cubicSplineShader.cpp" />
+    <ClCompile Include="curve.cpp" />
+    <ClCompile Include="curveJoint.cpp" />
+    <ClCompile Include="curvePlate.cpp" />
+    <ClCompile Include="curveSegment.cpp" />
+    <ClCompile Include="curveTangentJoint.cpp" />
+    <ClCompile Include="defaultPlate.cpp" />
+    <ClCompile Include="display.cpp" />
+    <ClCompile Include="drawable.cpp" />
+    <ClCompile Include="executor.cpp" />
+    <ClCompile Include="getColorOnPress.cpp" />
+    <ClCompile Include="globalVars.cpp" />
+    <ClCompile Include="interactionsHandler.cpp" />
+    <ClCompile Include="line.cpp" />
+    <ClCompile Include="lineEdgePoint.cpp" />
+    <ClCompile Include="lineMesh.cpp" />
+    <ClCompile Include="linePlate.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="random.cpp" />
+    <ClCompile Include="removable.cpp" />
+    <ClCompile Include="selectable.cpp" />
+    <ClCompile Include="semaphore.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="simpleShader.cpp" />
+    <ClCompile Include="sketch.cpp" />
+    <ClCompile Include="sketchEdgePoint.cpp" />
+    <ClCompile Include="sketchPlate.cpp" />
+    <ClCompile Include="squareMesh.cpp" />
+    <ClCompile Include="squareModel.cpp" />
+    <ClCompile Include="texMesh.cpp" />
+    <ClCompile Include="texShader.cpp" />
+    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="rdrand.asm" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{EEA23530-1CC3-40F8-A7EB-418A11DE6447}</ProjectGuid>
@@ -91,10 +205,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(SolutionDir)libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -143,114 +258,6 @@
       </SubSystem>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="brokenLine.cpp" />
-    <ClCompile Include="brokenLineJoint.cpp" />
-    <ClCompile Include="brokenLinePlate.cpp" />
-    <ClCompile Include="brokenLineSegment.cpp" />
-    <ClCompile Include="button.cpp" />
-    <ClCompile Include="buttons.cpp" />
-    <ClCompile Include="buttonsHolder.cpp" />
-    <ClCompile Include="canvas.cpp" />
-    <ClCompile Include="canvasDrawable.cpp" />
-    <ClCompile Include="canvasPlate.cpp" />
-    <ClCompile Include="cubicSplineMesh.cpp" />
-    <ClCompile Include="cubicSplineModel.cpp" />
-    <ClCompile Include="cubicSplineShader.cpp" />
-    <ClCompile Include="curve.cpp" />
-    <ClCompile Include="curveJoint.cpp" />
-    <ClCompile Include="curvePlate.cpp" />
-    <ClCompile Include="curveSegment.cpp" />
-    <ClCompile Include="globalVars.cpp" />
-    <ClCompile Include="controlPlate.cpp" />
-    <ClCompile Include="countdownLatch.cpp" />
-    <ClCompile Include="defaultPlate.cpp" />
-    <ClCompile Include="display.cpp" />
-    <ClCompile Include="drawable.cpp" />
-    <ClCompile Include="executor.cpp" />
-    <ClCompile Include="getColorOnPress.cpp" />
-    <ClCompile Include="interactionsHandler.cpp" />
-    <ClCompile Include="line.cpp" />
-    <ClCompile Include="lineMesh.cpp" />
-    <ClCompile Include="linePlate.cpp" />
-    <ClCompile Include="removable.cpp" />
-    <ClCompile Include="squareMesh.cpp" />
-    <ClCompile Include="squareModel.cpp" />
-    <ClCompile Include="stb_image.c" />
-    <ClCompile Include="tangentJoint.cpp" />
-    <ClCompile Include="texMesh.cpp" />
-    <ClCompile Include="selectable.cpp" />
-    <ClCompile Include="random.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="semaphore.cpp" />
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="simpleShader.cpp" />
-    <ClCompile Include="texShader.cpp" />
-    <ClCompile Include="texture.cpp" />
-    <ClCompile Include="window.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="batchQueue.hpp" />
-    <ClInclude Include="blockingQueue.hpp" />
-    <ClInclude Include="brokenLine.hpp" />
-    <ClInclude Include="brokenLinePlate.hpp" />
-    <ClInclude Include="brokenLinePlateDelegate.hpp" />
-    <ClInclude Include="button.hpp" />
-    <ClInclude Include="buttonDelegate.hpp" />
-    <ClInclude Include="buttons.hpp" />
-    <ClInclude Include="buttonsHolder.hpp" />
-    <ClInclude Include="canvas.hpp" />
-    <ClInclude Include="canvasDelegate.hpp" />
-    <ClInclude Include="canvasDrawable.hpp" />
-    <ClInclude Include="canvasDrawableDelegate.hpp" />
-    <ClInclude Include="canvasDrawables.hpp" />
-    <ClInclude Include="canvasPlate.hpp" />
-    <ClInclude Include="canvasPlates.hpp" />
-    <ClInclude Include="canvasPlatesDelegates.hpp" />
-    <ClInclude Include="controlPlateDelegate.hpp" />
-    <ClInclude Include="cubicSplineMesh.hpp" />
-    <ClInclude Include="cubicSplineModel.hpp" />
-    <ClInclude Include="cubicSplineShader.hpp" />
-    <ClInclude Include="curve.hpp" />
-    <ClInclude Include="curvePlate.hpp" />
-    <ClInclude Include="curvePlateDelegate.hpp" />
-    <ClInclude Include="defaultPlateDelegate.hpp" />
-    <ClInclude Include="globalVars.hpp" />
-    <ClInclude Include="concurrent.hpp" />
-    <ClInclude Include="controlPlate.hpp" />
-    <ClInclude Include="countdownLatch.hpp" />
-    <ClInclude Include="defaultPlate.hpp" />
-    <ClInclude Include="defs.hpp" />
-    <ClInclude Include="display.hpp" />
-    <ClInclude Include="drawable.hpp" />
-    <ClInclude Include="executor.hpp" />
-    <ClInclude Include="getColorOnPress.hpp" />
-    <ClInclude Include="interactionsHandler.hpp" />
-    <ClInclude Include="line.hpp" />
-    <ClInclude Include="lineMesh.hpp" />
-    <ClInclude Include="linePlate.hpp" />
-    <ClInclude Include="linePlateDelegate.hpp" />
-    <ClInclude Include="meshes.hpp" />
-    <ClInclude Include="removable.hpp" />
-    <ClInclude Include="removableDelegate.hpp" />
-    <ClInclude Include="selectableDelegate.hpp" />
-    <ClInclude Include="squareMesh.hpp" />
-    <ClInclude Include="squareModel.hpp" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="texMesh.hpp" />
-    <ClInclude Include="selectable.hpp" />
-    <ClInclude Include="random.hpp" />
-    <ClInclude Include="semaphore.hpp" />
-    <ClInclude Include="shader.hpp" />
-    <ClInclude Include="shaders.hpp" />
-    <ClInclude Include="simpleShader.hpp" />
-    <ClInclude Include="texShader.hpp" />
-    <ClInclude Include="texture.hpp" />
-    <ClInclude Include="window.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="rdrand.asm" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />

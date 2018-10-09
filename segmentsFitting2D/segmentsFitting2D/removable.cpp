@@ -4,7 +4,8 @@
 namespace thesis {
 
 Removable::Removable():
-	Selectable() {}
+	Selectable(),
+	removableDelegate(nullptr) {}
 
 Removable::~Removable() {}
 

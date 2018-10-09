@@ -4,7 +4,14 @@
 namespace thesis {
 Curve::Curve(const glm::vec2& q1, const glm::vec2& q2):
 	CanvasDrawable(),
-	joints() {
+	joints(),
+	relatives(),
+	color(defaultCurveColor),
+	pressed(false), released(true),
+	moved(false), marked(false),
+	xposPrev(0), yposPrev(0),
+	selectableDelegate(nullptr),
+	removableDelegate(nullptr) {
 	Joint* arr[] = { new Joint(q1), new Joint(q2) };
 	for(Joint* joint : arr) {
 		joint->setParent(this);
@@ -105,7 +112,7 @@ void Curve::leftPosition(double xpos, double ypos) {
 
 void Curve::resign() {
 	pressed = marked = moved = false;
-	color = defaultLineColor;
+	color = defaultCurveColor;
 	setDefaultState();
 	selectableDelegate->setDrawForPicking();
 }
@@ -120,7 +127,7 @@ void Curve::middlePress() {
 }
 
 void Curve::middleRelease(Removable* child) {
-	color = defaultLineColor;
+	color = defaultCurveColor;
 	released = true;
 	if(selectableDelegate->getSelectable() == child) {
 		child->ripMe();

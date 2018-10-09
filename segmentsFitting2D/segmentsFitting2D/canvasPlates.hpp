@@ -6,4 +6,4 @@
 #include "linePlate.hpp"
 #include "brokenLinePlate.hpp"
 #include "curvePlate.hpp"
-
+#include "sketchPlate.hpp"

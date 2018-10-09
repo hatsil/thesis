@@ -18,9 +18,9 @@ template <class E>
 class BlockingQueue {
 public:
 	BlockingQueue():
+		queue(),
 		mtx(),
-		sem(0),
-		queue() {}
+		sem(0) {}
 
 	virtual ~BlockingQueue() {}
 

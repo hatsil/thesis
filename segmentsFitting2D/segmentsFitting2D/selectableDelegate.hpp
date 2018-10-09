@@ -1,5 +1,6 @@
 #pragma once
 
+#include "shaders.hpp"
 #include "meshes.hpp"
 #include "selectable.hpp"
 
@@ -19,6 +20,7 @@ public:
 	virtual const SquareMesh& getSquareMesh() const = 0;
 	virtual const TexMesh& getTexMesh() const = 0;
 	virtual const CubicSplineMesh& getCubicSplineMesh() const = 0;
+	virtual const SimpleShader& getSimpleShader() const = 0;
 };
 
 } /* namespace thesis */

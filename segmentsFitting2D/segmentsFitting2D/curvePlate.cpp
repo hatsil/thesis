@@ -6,7 +6,8 @@ namespace thesis {
 CurvePlate::CurvePlate() :
 	CanvasPlate(),
 	pressed(false),
-	xpos(0), ypos(0) {}
+	xpos(0), ypos(0),
+	curvePlateDelegate(nullptr) {}
 
 CurvePlate::~CurvePlate() {}
 

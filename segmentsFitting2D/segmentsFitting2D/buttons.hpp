@@ -43,4 +43,14 @@ protected:
 	void setRelatives() override;
 };
 
+class SketchButton: public Button {
+public:
+	SketchButton();
+	virtual ~SketchButton();
+
+protected:
+	void buttonOperation() override;
+	void setRelatives() override;
+};
+
 } /* namespace thesis */

@@ -3,7 +3,9 @@
 #include <utility>
 
 namespace thesis {
-CanvasDrawable::CanvasDrawable() {}
+CanvasDrawable::CanvasDrawable():
+	it(),
+	canvasDrawableDelegate(nullptr) {}
 
 CanvasDrawable::~CanvasDrawable() {}
 

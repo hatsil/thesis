@@ -6,11 +6,13 @@ namespace thesis {
 BrokenLine::Joint::Joint(const glm::vec2& position):
 	Removable(),
 	position(position),
-	deleteParent(false),
 	segment(nullptr),
+	it(), deleteParent(false),
+	parent(nullptr),
 	translation(glm::translate(glm::mat4(1), glm::vec3(position, 0))),
 	color(normalJointColor),
-	isRipped(false), pressed(false), released(false), moved(false),
+	isRipped(false), pressed(false),
+	released(true), moved(false),
 	xposPrev(0), yposPrev(0) {}
 
 BrokenLine::Joint::~Joint() {
@@ -102,6 +104,7 @@ void BrokenLine::Joint::setDelegate(SelectableDelegate* selectableDelegate) {
 }
 
 void BrokenLine::Joint::ripMe() {
+	resign();
 	isRipped = true;
 
 	if(parent->canTakeDemolitionOwnership()) {

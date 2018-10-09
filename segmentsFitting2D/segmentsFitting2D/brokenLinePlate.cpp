@@ -4,7 +4,8 @@
 
 namespace thesis {
 BrokenLinePlate::BrokenLinePlate():
-	CanvasPlate() {}
+	CanvasPlate(),
+	brokenLinePlateDelegate(nullptr) {}
 
 BrokenLinePlate::~BrokenLinePlate() {}
 

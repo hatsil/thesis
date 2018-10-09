@@ -13,6 +13,7 @@ public:
 	virtual void setLinePlate() = 0;
 	virtual void setBrokenLinePlate() = 0;
 	virtual void setCurvePlate() = 0;
+	virtual void setSketchPlate() = 0;
 
 	//MARK: getters
 	virtual Selectable* getDefaultPlate() const = 0;
@@ -20,6 +21,7 @@ public:
 	virtual Selectable* getLinePlate() const = 0;
 	virtual Selectable* getBrokenLinePlate() const = 0;
 	virtual Selectable* getCurvePlate() const = 0;
+	virtual Selectable* getSketchPlate() const = 0;
 };
 
 } /* namespace thesis */

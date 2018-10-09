@@ -36,25 +36,27 @@
 #include <iostream>
 #include <exception>
 
-#include <cstdlib>
-
 #include "window.hpp"
 
 int main() {
 	int ans = 0;
-
 	try {
 		thesis::Window* window = new thesis::Window; //throws...
-
-		while(window->isActive())
-			glfwWaitEvents();
-
+		while (window->isActive()) {
+			if (window->waitForever())
+				glfwWaitEvents();
+			else {
+				glfwWaitEventsTimeout(window->getWaitingTime());
+				if (window->isActive())
+					window->drawIfNeeded();
+			}
+		}
 		delete window;
-	} catch(const std::exception& e) {
+	}
+	catch (const std::exception& e) {
 		std::cerr << "Exception thrown: " << e.what() << std::endl;
 		ans = 1;
 	}
-
 	return ans;
 }
 

@@ -4,11 +4,14 @@ namespace thesis {
 Curve::Joint::Joint(const glm::vec2& position):
 	Removable(),
 	position(position),
-	deleteParent(false),
+	tj(nullptr),
 	segment(nullptr),
+	it(),
+	deleteParent(false),
+	parent(nullptr),
 	translation(glm::translate(glm::mat4(1), glm::vec3(position, 0))),
 	color(normalJointColor),
-	isRipped(false), pressed(false), released(false), moved(false),
+	isRipped(false), pressed(false), released(true), moved(false),
 	xposPrev(0), yposPrev(0) {
 	tj = new TangentJoint;
 	tj->setParent(this);
@@ -74,7 +77,7 @@ void Curve::Joint::middlePress() {
 
 void Curve::Joint::middleRelease() {
 	if(selectableDelegate->getSelectable() == tj) {
-		parent->color = defaultLineColor;
+		parent->color = defaultCurveColor;
 		parent->released = true;
 		ripMe();
 	} else {
@@ -111,6 +114,7 @@ void Curve::Joint::setDelegate(SelectableDelegate* selectableDelegate) {
 }
 
 void Curve::Joint::ripMe() {
+	resign();
 	isRipped = true;
 
 	if(parent->canTakeDemolitionOwnership()) {

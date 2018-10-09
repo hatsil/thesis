@@ -1,5 +1,3 @@
-#pragma once
-
 #include "globalVars.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,8 +19,11 @@ namespace thesis {
 	//MARK: line width
 	const float boldLineWidth = 7.5f;
 
-	//MARK: line colors
-	const glm::vec3 defaultLineColor = glm::vec3(0, 0, 0);
+	//MARK: segments colors
+	const glm::vec3 defaultLineColor = glm::vec3(0);
+	const glm::vec3 defaultBrokenLineColor = glm::vec3(0, 77.f / 255.f, 40.f / 255.f);
+	const glm::vec3 defaultCurveColor = glm::vec3(77.f / 255.f, 0, 77.f / 255.f);
+	const glm::vec3 defaultSketchColor = glm::vec3(30.f / 255.f, 63.f / 255.f, 123.f / 255.f);
 	const glm::vec3 middlePressedColor = normalJointColor;
 
 	//MARK: buttons holder background color
@@ -35,8 +36,13 @@ namespace thesis {
 	}
 
 	const glm::mat4& rot45() {
-		const static glm::mat4 r = glm::rotate(glm::mat4(1), glm::radians(45.f), glm::vec3(0, 0, 1));
-		return r;
+		const static glm::mat4 r45 = glm::rotate(glm::mat4(1), glm::radians(45.f), glm::vec3(0, 0, 1));
+		return r45;
+	}
+
+	const glm::mat4& rot45Scale() {
+		const static glm::mat4 r45s = glm::scale(rot45(), jointScaleFactor);
+		return r45s;
 	}
 
 }

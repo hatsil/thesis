@@ -6,6 +6,9 @@
 namespace thesis {
 static const uint numBuffers = 2U;
 
+LineMesh::LineMesh(const SimpleShader& shader):
+		LineMesh(shader, {{0,0}, {1,0}}) {}
+
 LineMesh::LineMesh(const SimpleShader& shader, const std::vector<glm::vec2>& points) :
 	shader(shader),
 	m_vertexArrayBuffers(numBuffers, 0U),

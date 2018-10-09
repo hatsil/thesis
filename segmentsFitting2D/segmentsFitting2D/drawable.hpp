@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "defs.hpp"
+
+#include <glm/glm.hpp>
 
 namespace thesis {
 

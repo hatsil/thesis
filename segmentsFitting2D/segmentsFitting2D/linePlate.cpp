@@ -7,7 +7,8 @@ namespace thesis {
 LinePlate::LinePlate():
 	CanvasPlate(),
 	pressed(false),
-	xpos(0), ypos(0) {}
+	xpos(0), ypos(0),
+	linePlateDelegate(nullptr) {}
 
 LinePlate::~LinePlate() {}
 

@@ -3,7 +3,8 @@
 
 namespace thesis {
 ControlPlate::ControlPlate():
-	CanvasPlate() {}
+	CanvasPlate(),
+	controlPlateDelegate(nullptr) {}
 
 ControlPlate::~ControlPlate() {}
 

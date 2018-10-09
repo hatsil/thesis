@@ -18,11 +18,10 @@ namespace thesis {
 ButtonsHolder::ButtonsHolder(size_t width, size_t buttonSize):
 	width(width),
 	height(buttonSize + buttonSize / (size_t)5),
-	buttons() {}
-
-ButtonsHolder& ButtonsHolder::initButtons() {
-	buttons = {new LineButton, new BrokenLineButton, new CurveButton, new DefaultButton};
-	return *this;
+	controlPressed(false),
+	buttons(),
+	buttonDelegate(nullptr) {
+	buttons = {new LineButton, new BrokenLineButton, new CurveButton, new SketchButton, new DefaultButton};
 }
 
 ButtonsHolder::~ButtonsHolder() {
@@ -72,7 +71,7 @@ void ButtonsHolder::setDelegate(ButtonDelegate* buttonDelegate) {
 }
 
 void ButtonsHolder::forEach(const std::function<void(int, Button*)>& func) const {
-	for(int i = 0; i < buttons.size(); ++i)
+	for(int i = 0; i < (int)buttons.size(); ++i)
 		func(i, buttons[i]);
 }
 

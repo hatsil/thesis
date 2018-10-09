@@ -14,7 +14,6 @@
 
 #include <functional>
 #include <vector>
-#include <iostream>
 
 namespace thesis {
 class ButtonDelegate;
@@ -30,7 +29,6 @@ public:
 	//MARK: pubnlic methods
 	void controlPress();
 	void controlRelease();
-	ButtonsHolder& initButtons();
 
 	size_t getWidth() const;
 	size_t getHeight() const;

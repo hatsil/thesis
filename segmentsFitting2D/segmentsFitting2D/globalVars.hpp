@@ -19,8 +19,11 @@ namespace thesis {
 	//MARK: line width
 	extern const float boldLineWidth;
 
-	//MARK: line colors
+	//MARK: segments colors
 	extern const glm::vec3 defaultLineColor;
+	extern const glm::vec3 defaultBrokenLineColor;
+	extern const glm::vec3 defaultCurveColor;
+	extern const glm::vec3 defaultSketchColor;
 	extern const glm::vec3 middlePressedColor;
 
 	//MARK: buttons holder background color
@@ -29,4 +32,5 @@ namespace thesis {
 	//MARK: default functions
 	const glm::mat4& scale();
 	const glm::mat4& rot45();
+	const glm::mat4& rot45Scale();
 }

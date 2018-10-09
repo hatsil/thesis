@@ -26,6 +26,8 @@
 #include <string>
 #include <exception>
 #include <stdexcept>
+#include <chrono>
+#include <ratio>
 
 #include <GLFW/glfw3.h>
 
@@ -40,6 +42,9 @@ public:
 
 	//MARK: public methods
 	bool isActive() const;
+	bool waitForever() const;
+	double getWaitingTime() const;
+	void drawIfNeeded();
 
 	//MARK: Drawable
 	void draw() const override;
@@ -54,11 +59,13 @@ public:
 	void setLinePlate() override;
 	void setBrokenLinePlate() override;
 	void setCurvePlate() override;
+	void setSketchPlate() override;
 	Selectable* getDefaultPlate() const override;
 	Selectable* getControlPlate() const override;
 	Selectable* getLinePlate() const override;
 	Selectable* getBrokenLinePlate() const override;
 	Selectable* getCurvePlate() const override;
+	Selectable* getSketchPlate() const override;
 
 	//MARK: SelectableDelegate
 	void getCursorPosition(double& xpos, double& ypos) const override;
@@ -72,6 +79,7 @@ public:
 	const SquareMesh& getSquareMesh() const override;
 	const TexMesh& getTexMesh() const override;
 	const CubicSplineMesh& getCubicSplineMesh() const override;
+	const SimpleShader& getSimpleShader() const override;
 
 private:
 	//MARK: private fields
@@ -79,6 +87,8 @@ private:
 	std::set<Selectable*, SelectablePtrComp> selectables;
 	size_t width, height;
 	uchar* colorsBuffer;
+	std::chrono::time_point<std::chrono::system_clock> prevTime;
+	double waitingTime;
 
 	//MARK: commands plates
 	ButtonsHolder* buttonsHolder;
@@ -110,7 +120,6 @@ private:
 	void controlPress();
 	void controlRelease();
 	void drawAll();
-	void drawIfNeeded();
 	
 	//MARK: callbacks
 	void keyCallback(int key, int scancode, int action, int mods);

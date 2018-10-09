@@ -1,13 +1,20 @@
+/*
+ * sketchPlate.hpp
+ *
+ *  Created on: 8 Oct 2018
+ *      Author: hatsil
+ */
+
 #pragma once
 
 #include "canvasPlate.hpp"
 
 namespace thesis {
-class LinePlateDelegate;
-class LinePlate: public CanvasPlate {
+class SketchPlateDelegate;
+class SketchPlate: public CanvasPlate {
 public:
-	LinePlate();
-	virtual ~LinePlate();
+	SketchPlate();
+	virtual ~SketchPlate();
 
 	//MARK: Drawable
 	void draw() const override;
@@ -17,13 +24,14 @@ public:
 	void leftRelease() override;
 	void leftPosition(double xpos, double ypos) override;
 
-	void setDelegate(LinePlateDelegate* linePlateDelegate);
+	void setDelegate(SketchPlateDelegate* sketchPlateDelegate);
 	void setDelegate(SelectableDelegate* selectableDelegate) override;
+
+
 
 private:
 	bool pressed;
-	double xpos, ypos;
-	LinePlateDelegate* linePlateDelegate;
+	SketchPlateDelegate* sketchPlateDelegate;
 };
 
 } /* namespace thesis */

@@ -13,10 +13,6 @@
 
 #include "canvasDelegate.hpp"
 
-#include "globalVars.hpp"
-
-#include "lineMesh.hpp"
-
 #include <iterator>
 
 namespace thesis {
@@ -24,25 +20,29 @@ Canvas::Canvas(size_t width, size_t height) :
 	Drawable(),
 	width(width),
 	height(height),
+	canvasDelegate(nullptr),
 	rippedObjects(),
 	drawables(),
 	brokenLineList(),
-	lineTransformation(nullptr) {
+	tempLine(),
+	tempSketch() {
 
 	defaultPlate = new DefaultPlate;
 	controlPlate = new ControlPlate;
 	linePlate = new LinePlate;
 	brokenLinePlate = new BrokenLinePlate;
 	curvePlate = new CurvePlate;
+	sketchPlate = new SketchPlate;
 
 	defaultPlate->setDelegate((DefaultPlateDelegate*)this);
 	linePlate->setDelegate((LinePlateDelegate*)this);
 	controlPlate->setDelegate((ControlPlateDelegate*)this);
 	brokenLinePlate->setDelegate((BrokenLinePlateDelegate*)this);
 	curvePlate->setDelegate((CurvePlateDelegate*)this);
+	sketchPlate->setDelegate((SketchPlateDelegate*)this);
 	
-	//set defalt plate:
-	curPlate = prevPlate = defaultPlate;
+	//set default plate:
+	curPlate = defaultPlate;
 }
 
 Canvas::~Canvas() {
@@ -51,10 +51,10 @@ Canvas::~Canvas() {
 	delete controlPlate;
 	delete brokenLinePlate;
 	delete curvePlate;
-
-	if(lineTransformation)
-		delete lineTransformation;
+	delete sketchPlate;
 	
+	tempSketch = nullptr;
+
 	for(CanvasDrawable* canvasDrawable : drawables)
 		delete canvasDrawable;
 }
@@ -66,36 +66,16 @@ glm::vec2 Canvas::convertPos(double xpos, double ypos) const {
 	return {x, y};
 }
 
-void Canvas::lineDraw() {
-	defaultDraw();
-	if(lineTransformation) {
-		float prevLineWidth;
-		glGetFloatv(GL_LINE_WIDTH, &prevLineWidth);
-		glLineWidth(boldLineWidth);
-		lineMesh().draw(*lineTransformation, defaultLineColor);
-		glLineWidth(prevLineWidth);
-		
-		//cleanup
-		delete lineTransformation;
-		lineTransformation = nullptr;
-	}
-}
-
 void Canvas::setTempLine(double xposBegin, double yposBegin, double xposEnd, double yposEnd) {
-	if(lineTransformation)
-		delete lineTransformation;
-
 	//calc transformation
 	glm::vec2 p1 = convertPos(xposBegin, yposBegin);
 	glm::vec2 p2 = convertPos(xposEnd, yposEnd);
-	lineTransformation = new glm::mat4(LineMesh::calcTransformation(p1, p2));
+	tempLine = TempLine(p1, p2);
 }
 
 void Canvas::packLine(double xposBegin, double yposBegin) {
-	if(lineTransformation) {
-		delete lineTransformation;
-		lineTransformation = nullptr;
-	}
+	//cleanup
+	tempLine = false;
 
 	double xposEnd;
 	double yposEnd;
@@ -110,10 +90,8 @@ void Canvas::packLine(double xposBegin, double yposBegin) {
 }
 
 void Canvas::packCurve(double xposBegin, double yposBegin) {
-	if (lineTransformation) {
-		delete lineTransformation;
-		lineTransformation = nullptr;
-	}
+	//cleanup
+	tempLine = false;
 
 	double xposEnd;
 	double yposEnd;
@@ -137,7 +115,7 @@ void Canvas::brokenLineDraw() {
 		glm::vec2 p1 = brokenLineList.front();
 		for(auto it = std::next(brokenLineList.begin()); it != brokenLineList.cend(); ++it) {
 			glm::vec2 p2 = *it;
-			lineMesh().draw(LineMesh::calcTransformation(p1, p2), defaultLineColor);
+			lineMesh().draw(TempLine(p1, p2), defaultBrokenLineColor);
 			p1 = p2;
 		}
 		
@@ -184,6 +162,39 @@ void Canvas::brokenLinePosition(double xpos, double ypos) {
 	}
 }
 
+void Canvas::sketchDraw() {
+	defaultDraw();
+	float prevLineWidth;
+	glGetFloatv(GL_LINE_WIDTH, &prevLineWidth);
+	glLineWidth(boldLineWidth);
+	tempSketch.draw();
+	glLineWidth(prevLineWidth);
+}
+
+void Canvas::sketchLeftPress() {
+	tempSketch = nullptr;
+	double xpos, ypos;
+	canvasDelegate->getCursorPosition(xpos, ypos);
+	tempSketch << convertPos(xpos, ypos);
+}
+
+void Canvas::sketchLeftPosition(double xpos, double ypos) {
+	tempSketch << convertPos(xpos, ypos);
+}
+
+void Canvas::packSketch() {
+	if(tempSketch) {
+		Sketch* sketch = new Sketch(tempSketch);
+		sketch->setDelegate(canvasDelegate);
+		sketch->setDelegate((RemovableDelegate*)this);
+		sketch->setDelegate((CanvasDrawableDelegate*)this);
+		sketch->inserted(drawables.insert(drawables.cend(), sketch));
+	}
+
+	//cleanup
+	tempSketch = nullptr;
+}
+
 void Canvas::remove(const std::list<CanvasDrawable*>::iterator& it) {
 	drawables.erase(it);
 }
@@ -199,12 +210,11 @@ void Canvas::addRipped(Removable* ripped) {
 }
 
 void Canvas::controlPress() {
-	prevPlate = curPlate;
 	curPlate = controlPlate;
 }
 
 void Canvas::controlRelease() {
-	curPlate = prevPlate;
+	curPlate = defaultPlate;
 }
 
 void Canvas::setDefaultPlate() {
@@ -221,6 +231,10 @@ void Canvas::setBrokenLinePlate() {
 
 void Canvas::setCurvePlate() {
 	curPlate = curvePlate;
+}
+
+void Canvas::setSketchPlate() {
+	curPlate = sketchPlate;
 }
 
 Selectable* Canvas::getDefaultPlate() const {
@@ -241,6 +255,10 @@ Selectable* Canvas::getBrokenLinePlate() const {
 
 Selectable* Canvas::getCurvePlate() const {
 	return curvePlate;
+}
+
+Selectable* Canvas::getSketchPlate() const {
+	return sketchPlate;
 }
 
 void Canvas::clearRippedObjects() {
@@ -285,6 +303,20 @@ const LineMesh& Canvas::lineMesh() const {
 	return canvasDelegate->getLineMesh();
 }
 
+void Canvas::lineDraw(const glm::vec3& color) {
+	defaultDraw();
+	if(tempLine) {
+		float prevLineWidth;
+		glGetFloatv(GL_LINE_WIDTH, &prevLineWidth);
+		glLineWidth(boldLineWidth);
+		lineMesh().draw(tempLine, color);
+		glLineWidth(prevLineWidth);
+
+		//cleanup
+		tempLine = false;
+	}
+}
+
 void Canvas::undo() {
 	//TODO: implement
 }
@@ -308,6 +340,8 @@ void Canvas::setDelegate(CanvasDelegate* canvasDelegate) {
 	controlPlate->setDelegate(canvasDelegate);
 	brokenLinePlate->setDelegate(canvasDelegate);
 	curvePlate->setDelegate(canvasDelegate);
+	sketchPlate->setDelegate(canvasDelegate);
+	tempSketch.setDelegate(canvasDelegate);
 }
 
 } /* namespace thesis */

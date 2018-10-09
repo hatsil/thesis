@@ -10,7 +10,7 @@ CubicSplineModel::CubicSplineModel(uint numIndices):
 		double t = (double)i / denom;
 		double t2 = t * t;
 		double t3 = t * t * t;
-		ts[i] = { float(t3), float(t2), float(t), 1 };
+		ts[i] = { (float)t3, (float)t2, (float)t, 1 };
 	}
 }
 

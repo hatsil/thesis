@@ -130,7 +130,7 @@ private:
 		void createSegment();
 
 		inline void destroySegment() {
-			if (segment)
+			if(segment)
 				delete segment;
 		}
 
@@ -253,7 +253,6 @@ private:
 		//MARK: private fields
 		glm::vec2 tangent;
 		Joint* parent;
-
 		glm::mat4 translation;
 		glm::vec3 color;
 		bool pressed, released, moved;
@@ -320,7 +319,7 @@ private:
 
 	template<class Function>
 	void forEach(const Function& func) {
-		for (Joint* joint : joints)
+		for(Joint* joint : joints)
 			func(joint);
 	}
 

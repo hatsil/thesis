@@ -2,9 +2,15 @@
 #include "canvasDrawableDelegate.hpp"
 
 namespace thesis {
-BrokenLine::BrokenLine(const std::list<glm::vec2> & points) :
+BrokenLine::BrokenLine(const std::list<glm::vec2>& points) :
 	CanvasDrawable(),
-	joints() {
+	joints(),
+	color(defaultBrokenLineColor),
+	pressed(false), released(true),
+	moved(false), marked(false),
+	xposPrev(0), yposPrev(0),
+	selectableDelegate(nullptr),
+	removableDelegate(nullptr) {
 	for(const glm::vec2& point : points) {
 		Joint* joint = new Joint(point);
 		joint->setParent(this);
@@ -105,7 +111,7 @@ void BrokenLine::leftPosition(double xpos, double ypos) {
 
 void BrokenLine::resign() {
 	pressed = marked = moved = false;
-	color = defaultLineColor;
+	color = defaultBrokenLineColor;
 	setDefaultState();
 	selectableDelegate->setDrawForPicking();
 }
@@ -120,7 +126,7 @@ void BrokenLine::middlePress() {
 }
 
 void BrokenLine::middleRelease(Removable* child) {
-	color = defaultLineColor;
+	color = defaultBrokenLineColor;
 	released = true;
 	if(selectableDelegate->getSelectable() == child) {
 		child->ripMe();

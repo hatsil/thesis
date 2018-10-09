@@ -25,7 +25,7 @@ Shader::Shader(const char* fileName) :
 }
 
 Shader::~Shader() {
-	for(auto&& m_shader : m_shaders) {
+	for(uint m_shader : m_shaders) {
 		glDetachShader(m_program, m_shader);
 		glDeleteShader(m_shader);
 	}
@@ -82,7 +82,7 @@ uint Shader::createShader(const std::string& text, uint type) {
 	const GLchar* p[1];
 	p[0] = text.c_str();
 	GLint lengths[1];
-	lengths[0] = text.length();
+	lengths[0] = (GLint)text.length();
 
 	glShaderSource(shader, 1, p, lengths);
 	glCompileShader(shader);

@@ -1,9 +1,10 @@
 #include "curve.hpp"
 
 namespace thesis {
-Curve::TangentJoint::TangentJoint() :
+Curve::TangentJoint::TangentJoint():
 	Selectable(),
 	tangent(0),
+	parent(nullptr),
 	translation(1),
 	color(normalTangentJointColor),
 	pressed(false), released(false), moved(false),
@@ -12,11 +13,11 @@ Curve::TangentJoint::TangentJoint() :
 Curve::TangentJoint::~TangentJoint() {}
 
 void Curve::TangentJoint::draw() const {
-	mesh().draw(translation * rot45() * scale(), color);
+	mesh().draw(translation * rot45Scale(), color);
 }
 
 void Curve::TangentJoint::drawForPicking() const {
-	mesh().draw(translation * rot45() * scale(), pickingColorVec);
+	mesh().draw(translation * rot45Scale(), pickingColorVec);
 }
 
 void Curve::TangentJoint::leftPress(Selectable*) {

@@ -6,6 +6,8 @@
 namespace thesis {
 BrokenLine::Segment::Segment():
 	Removable(),
+	parent(nullptr),
+	it(),
 	deleteParent(false) {}
 
 BrokenLine::Segment::~Segment() {
@@ -88,7 +90,7 @@ void BrokenLine::Segment::drawForPicking() const {
 
 void BrokenLine::Segment::controlDraw() const {
 	glm::mat4 transformation = calcTransformation();
-	mesh().draw(transformation, defaultLineColor);
+	mesh().draw(transformation, defaultBrokenLineColor);
 }
 
 } /* namespace thesis */

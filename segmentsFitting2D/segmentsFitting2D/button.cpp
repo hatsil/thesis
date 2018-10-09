@@ -6,6 +6,7 @@
 namespace thesis {
 Button::Button(const char* fileName):
 	Selectable(),
+	buttonDelegate(nullptr),
 	relatives(),
 	texture(fileName),
 	marked(false),

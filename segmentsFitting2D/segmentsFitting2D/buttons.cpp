@@ -68,4 +68,21 @@ void CurveButton::setRelatives() {
 	relatives.insert(buttonDelegate->getControlPlate());
 }
 
+
+//MARK: CurveButton
+SketchButton::SketchButton():
+	Button("./res/textures/buttons/pencil.jpg") {}
+
+SketchButton::~SketchButton() {}
+
+
+void SketchButton::buttonOperation() {
+	buttonDelegate->setSketchPlate();
+}
+
+void SketchButton::setRelatives() {
+	relatives.insert(buttonDelegate->getSketchPlate());
+	relatives.insert(buttonDelegate->getControlPlate());
+}
+
 } /* namespace thesis */

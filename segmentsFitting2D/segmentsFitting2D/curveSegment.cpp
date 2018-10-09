@@ -7,6 +7,8 @@ namespace thesis {
 
 Curve::Segment::Segment() :
 	Removable(),
+	parent(nullptr),
+	it(),
 	deleteParent(false) {}
 
 Curve::Segment::~Segment() {
@@ -99,7 +101,7 @@ void Curve::Segment::drawForPicking() const {
 }
 
 void Curve::Segment::controlDraw() const {
-	mesh().draw(f(), defaultLineColor);
+	mesh().draw(f(), defaultCurveColor);
 }
 
 } /* namespace thesis */

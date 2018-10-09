@@ -12,8 +12,10 @@ namespace thesis {
 static uint pickingColorSingleton = 1;
 
 Selectable::Selectable():
+	Drawable(),
 	pickingColor(pickingColorSingleton),
-	pickingColorVec(convertPickingColor(pickingColorSingleton)) {
+	pickingColorVec(convertPickingColor(pickingColorSingleton)),
+	selectableDelegate(nullptr) {
 		++pickingColorSingleton;
 	}
 

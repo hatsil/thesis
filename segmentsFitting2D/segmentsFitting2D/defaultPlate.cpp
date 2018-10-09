@@ -3,7 +3,8 @@
 
 namespace thesis {
 DefaultPlate::DefaultPlate():
-	CanvasPlate() {}
+	CanvasPlate(),
+	defaultPlateDelegate(nullptr) {}
 
 DefaultPlate::~DefaultPlate() {}
 
